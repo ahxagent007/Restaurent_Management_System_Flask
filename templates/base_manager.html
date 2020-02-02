@@ -15,6 +15,8 @@
         <link rel="stylesheet" href="{{url_for('static', filename='vendor/fonts/material-design-iconic-font/css/materialdesignicons.min.css')}}">
         <link rel="stylesheet" href="{{url_for('static', filename='vendor/charts/c3charts/c3.css')}}">
         <link rel="stylesheet" href="{{url_for('static', filename='vendor/fonts/flag-icon-css/flag-icon.min.css')}}">
+
+
         {% block title %} {% endblock %}
 
 
@@ -30,7 +32,7 @@
             <!-- ============================================================== -->
             <div class="dashboard-header">
                 <nav class="navbar navbar-expand-lg bg-white fixed-top">
-                    <a class="navbar-brand" href="index.html">RMS</a>
+                    <a class="navbar-brand" href="/">RMS</a>
                     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                         <span class="navbar-toggler-icon"></span>
                     </button>
@@ -109,8 +111,8 @@
             <div class="nav-left-sidebar sidebar-dark">
                 <div class="menu-list">
                     <nav class="navbar navbar-expand-lg navbar-light">
-                        <a class="d-xl-none d-lg-none" href="{{ url_for('manager_dashboard')}} ">Dashboard</a>
-                        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                        <a class="d-xl-none d-lg-none" href="#">Dashboard</a>
+                        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="true" aria-label="Toggle navigation">
                             <span class="navbar-toggler-icon"></span>
                         </button>
                         <div class="collapse navbar-collapse" id="navbarNav">
@@ -119,57 +121,41 @@
                                     Menu
                                 </li>
                                 <li class="nav-item ">
-                                    <a class="nav-link active" href="/Manager" data-toggle="collapse" aria-expanded="false" data-target="#submenu-1" aria-controls="submenu-1"><i class="fa fa-fw fa-user-circle"></i>Dashboard <span class="badge badge-success">6</span></a>
-                                    <div id="submenu-1" class="collapse submenu" style="">
-                                        <ul class="nav flex-column">
-                                            <li class="nav-item">
-                                                <a class="nav-link" href="manager_sales.html">Sales</a>
-                                            </li>
-                                            <li class="nav-item">
-                                                <a class="nav-link" href="manager_stock.html">Stock</a>
-                                            </li>
-                                            <li class="nav-item">
-                                                <a class="nav-link" href="#" data-toggle="collapse" aria-expanded="false" data-target="#submenu-1-1" aria-controls="submenu-1-1">Employee</a>
-                                                <div id="submenu-1-1" class="collapse submenu" style="">
-                                                    <ul class="nav flex-column">
-                                                        <li class="nav-item">
-                                                            <a class="nav-link" href="manager_emp_all.html">All</a>
-                                                        </li>
-                                                        <li class="nav-item">
-                                                            <a class="nav-link" href="manager_emp_onWork.html">On Work</a>
-                                                        </li>
-                                                    </ul>
-                                                </div>
-                                            </li>
-                                             <li class="nav-item">
-                                                <a class="nav-link" href="manager_msg.html">Messages</a>
-                                            </li>
-                                        </ul>
-                                    </div>
+                                    <a class="nav-link" href="{{ url_for('manager_dashboard')}}"><i class="fa fa-fw fa-user-circle"></i>Dashboard</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link" href="#" data-toggle="collapse" aria-expanded="false" data-target="#submenu-2" aria-controls="submenu-2"><i class="fa fa-fw fa-rocket"></i>Add</a>
-                                    <div id="submenu-2" class="collapse submenu" style="">
-                                        <ul class="nav flex-column">
-                                            <li class="nav-item">
-                                                <a class="nav-link" href="manager_add_emp.html">Employee</a>
-                                            </li>
-                                            <li class="nav-item">
-                                                <a class="nav-link" href="manager_add_menu.html">Menu</a>
-                                            </li>
-                                            <li class="nav-item">
-                                                <a class="nav-link" href="manager_add_dish.html">Dish</a>
-                                            </li>
-                                            <li class="nav-item">
-                                                <a class="nav-link" href="manager_add_table.html">Table</a>
-                                            </li>
-                                            <li class="nav-item">
-                                                <a class="nav-link" href="manager_add_offers.html">Offers</a>
-                                            </li>
-
-                                        </ul>
-                                    </div>
+                                    <a class="nav-link" href="/Manager/Sales"><i class="fa fa-fw fa-user-circle"></i>Sales</a>
                                 </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="/Manager/Stock"><i class="fa fa-fw fa-user-circle"></i>Stock</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="/Manager/EmpAll"><i class="fa fa-fw fa-user-circle"></i>Employee All</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="/Manager/EmpWork"><i class="fa fa-fw fa-user-circle"></i>Employee On Work</a>
+                                </li>
+
+                                 <li class="nav-item">
+                                    <a class="nav-link" href="/Manager/Message"><i class="fa fa-fw fa-user-circle"></i>Messages</a>
+                                </li>
+
+                                <li class="nav-item">
+                                    <a class="nav-link" href="/Manager/Add/Employee"><i class="fa fa-fw fa-user-circle"></i>Add Employee</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="/Manager/Add/Menu"><i class="fa fa-fw fa-user-circle"></i>Add Menu</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="/Manager/Add/Dish"><i class="fa fa-fw fa-user-circle"></i>Add Dish</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="/Manager/Add/Table"><i class="fa fa-fw fa-user-circle"></i>Add Table</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="/Manager/Add/Offers"><i class="fa fa-fw fa-user-circle"></i>Add Offers</a>
+                                </li>
+
 
 
                             </ul>
@@ -212,7 +198,6 @@
                         <div class="ecommerce-widget">
                             {% block content %} {% endblock %}
 
-
                         </div>
                     </div>
                 </div>
@@ -248,25 +233,25 @@
 
         <!-- Optional JavaScript -->
         <!-- jquery 3.3.1 -->
-        <script src="{{ url_for('static', filename='vendor/jquery/jquery-3.3.1.min.js') }}"></script>
+        <script type="text/javascript" src="{{ url_for('static', filename='vendor/jquery/jquery-3.3.1.min.js') }}"></script>
         <!-- bootstap bundle js -->
-        <script src="{{url_for('static', filename='vendor/bootstrap/js/bootstrap.bundle.js')}}}"></script>
+        <script type="text/javascript" src="{{ url_for('static', filename='vendor/bootstrap/js/bootstrap.bundle.js') }}}"></script>
         <!-- slimscroll js -->
-        <script src="{{url_for('static', filename='vendor/slimscroll/jquery.slimscroll.js')}}"></script>
+        <script type="text/javascript" src="{{ url_for('static', filename='vendor/slimscroll/jquery.slimscroll.js') }}"></script>
         <!-- main js -->
-        <script src="{{url_for('static', filename='libs/js/main-js.js')}}"></script>
+        <script type="text/javascript" src="{{ url_for('static', filename='libs/js/main-js.js') }}"></script>
         <!-- chart chartist js -->
-        <script src="{{url_for('static', filename='vendor/charts/chartist-bundle/chartist.min.js')}}"></script>
+        <script type="text/javascript" src="{{ url_for('static', filename='vendor/charts/chartist-bundle/chartist.min.js') }}"></script>
         <!-- sparkline js -->
-        <script src="{{url_for('static', filename='vendor/charts/sparkline/jquery.sparkline.js')}}"></script>
+        <script type="text/javascript" src="{{ url_for('static', filename='vendor/charts/sparkline/jquery.sparkline.js') }}"></script>
         <!-- morris js -->
-        <script src="{{url_for('static', filename='vendor/charts/morris-bundle/raphael.min.js')}}"></script>
-        <script src="{{url_for('static', filename='vendor/charts/morris-bundle/morris.js')}}"></script>
+        <script type="text/javascript" src="{{ url_for('static', filename='vendor/charts/morris-bundle/raphael.min.js') }}"></script>
+        <script type="text/javascript" src="{{ url_for('static', filename='vendor/charts/morris-bundle/morris.js') }}"></script>
         <!-- chart c3 js -->
-        <script src="{{url_for('static', filename='vendor/charts/c3charts/c3.min.js')}}"></script>
-        <script src="{{url_for('static', filename='vendor/charts/c3charts/d3-5.4.0.min.js')}}"></script>
-        <script src="{{url_for('static', filename='vendor/charts/c3charts/C3chartjs.js')}}"></script>
-        <script src="{{url_for('static', filename='libs/js/dashboard-ecommerce.js')}}"></script>
+        <script type="text/javascript" src="{{ url_for('static', filename='vendor/charts/c3charts/c3.min.js') }}"></script>
+        <script type="text/javascript" src="{{ url_for('static', filename='vendor/charts/c3charts/d3-5.4.0.min.js') }}"></script>
+        <script type="text/javascript" src="{{ url_for('static', filename='vendor/charts/c3charts/C3chartjs.js') }}"></script>
+        <script type="text/javascript" src="{{ url_for('static', filename='libs/js/dashboard-ecommerce.js') }}"></script>
 
         <!-- custom JS -->
 
