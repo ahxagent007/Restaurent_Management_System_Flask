@@ -50,6 +50,22 @@ def manager_add_table():
 def manager_add_offers():
    return render_template('manager_add_offers.html')
 
+
+@app.route('/Sales')
+def sales_dashboard():
+   return render_template('salesman.html')
+
+@app.route('/Sales/Order')
+def sales_order():
+   return render_template('salesman_order.html')
+
+@app.route('/Sales/Invoice')
+def sales_invoice():
+   return render_template('salesman_invoice.html')
+
+
+
+
 app.debug = True
 app.run()
 app.run(debug = True)
