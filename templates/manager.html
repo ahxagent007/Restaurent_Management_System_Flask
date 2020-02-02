@@ -9,6 +9,14 @@
     <h2 class="pageheader-title">Manager Dashboard</h2>
     <p class="pageheader-text">Nulla euismod urna eros, sit amet scelerisque torton lectus vel mauris facilisis faucibus at enim quis massa lobortis rutrum.</p>
 
+    <div class="page-breadcrumb">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item" aria-current="page"><a href="{{ url_for('manager_dashboard')}}" class="breadcrumb-link">Dashboard</a></li>
+            </ol>
+        </nav>
+    </div>
+
 {% endblock %}
 
 
@@ -92,7 +100,6 @@
         <!-- ============================================================== -->
 
     </div>
-
     <div class="row">
         <!-- ============================================================== -->
         <!-- sales  -->

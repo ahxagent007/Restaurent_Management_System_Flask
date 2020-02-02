@@ -24,7 +24,7 @@ def manager_emp_all():
 
 @app.route('/Manager/EmpWork')
 def manager_emp_work():
-   return render_template('manager_emp_work.html')
+   return "not Found!!"
 
 @app.route('/Manager/Message')
 def manager_msg():
