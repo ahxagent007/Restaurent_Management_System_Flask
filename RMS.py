@@ -1,8 +1,36 @@
 from flask import Flask, render_template, request
+import pymysql
+
+#db = pymysql.connect("localhost", "root", "", "flask_db")
+
+
 app = Flask(__name__, template_folder='templates', static_folder='static')
+
+class DatabaseByPyMySQL:
+   def __init__(self):
+      host = "localhost"
+      user = "root"
+      password = ""
+      db = "flask_db"
+
+      self.conection = pymysql.connect(host=host, user=user, password=password, db=db, cursorclass=pymysql.cursors.DictCursor)
+      self.cursor = self.conection.cursor()
+
+   '''def addSome(self):
+      self.cursor.execute("INSERT INTO demo VALUES(" + str(32154) + "," + str(85746) + ");")
+      self.conection.commit()
+      print("DATA ADDED")
+
+   def getSome(self):
+      self.cursor.execute("SELECT * from demo;")
+      data = self.cursor.fetchall()
+      print(data)'''
+
+
 
 @app.route('/')
 def index():
+
    return 'INDEX'
 
 
