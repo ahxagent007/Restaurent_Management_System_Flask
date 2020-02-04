@@ -1,5 +1,8 @@
+import sys
+
 from flask import Flask, render_template, request
 import pymysql
+import logging
 
 #db = pymysql.connect("localhost", "root", "", "flask_db")
 
@@ -25,6 +28,14 @@ class DatabaseByPyMySQL:
       self.cursor.execute("SELECT * from demo;")
       data = self.cursor.fetchall()
       print(data)'''
+
+   def isEmailExist(self, email):
+      self.cursor.execute("SELECT * FROM login WHERE email = \""+email+"\";")
+      data = self.cursor.fetchall()
+      if(len(data)>0 ):
+         return True
+      else:
+         return False
 
 
 
@@ -90,6 +101,33 @@ def sales_order():
 @app.route('/Sales/Invoice')
 def sales_invoice():
    return render_template('salesman_invoice.html')
+
+@app.route('/Manager/Add/EmployeeAdd',methods = ['POST', 'GET'])
+def manager_add_emp_form():
+   if request.method == 'POST':
+      EmployeeName = request.form['EmployeeName']
+      passwEmployeePhoneNumberord = request.form['EmployeePhoneNumber']
+      EmployeeAddress = request.form['EmployeeAddress']
+      EmployeeEmail = request.form['EmployeeEmail']
+      EmployeePass = request.form['EmployeePass01']
+
+      log = EmployeeName +"  "+passwEmployeePhoneNumberord+" "+EmployeeAddress+" "+EmployeeEmail+" "+EmployeePass
+      print(log, flush=True)
+
+      db = DatabaseByPyMySQL()
+      if(db.isEmailExist(EmployeeEmail)):
+         print(" USER EXIST ", flush=True)
+      else:
+         print(" USER IS NEW ", flush=True)
+
+   return render_template('manager_add_emp.html')
+
+
+
+
+
+
+
 
 
 
