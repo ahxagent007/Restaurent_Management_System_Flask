@@ -2,7 +2,7 @@ import sys
 
 from flask import Flask, render_template, request
 import pymysql
-import logging
+import hashlib
 
 #db = pymysql.connect("localhost", "root", "", "flask_db")
 
@@ -37,7 +37,154 @@ class DatabaseByPyMySQL:
       else:
          return False
 
+   def addNewEmployee(self, name, phone, email, address, passwd):
 
+      try:
+         # getting the last ID
+         self.cursor.execute("SELECT user_id from users;")
+         data = self.cursor.fetchall()
+         print('data = ',data, flush=True)
+         id = data[0]['user_id']
+
+         id = id + 1
+         print('user_id == ',str(id), flush=True)
+
+         #Adding User
+         sql1 = 'INSERT INTO users(user_id, name, phone_no, email, address, type) VALUES({0},"{1}", "{2}", "{3}", "{4}", "{5}");'.format(id, name, phone, email, address, 'EMP')
+         self.cursor.execute(sql1)
+         self.conection.commit()
+
+         print(sql1, flush=True)
+
+         passwd = hashlib.md5(passwd.encode())
+         #adding Login details
+         sql2 = 'INSERT INTO login(user_id,  email, password) VALUES({0},"{1}", "{2}");'.format(id, email, passwd)
+         self.cursor.execute(sql2)
+         self.conection.commit()
+
+         print(sql2, flush=True)
+         return True
+
+      except :
+         print('Error occurred on addNewEmployee()', flush=True)
+         print('Error = ',str(sys.exc_info()[0]), flush=True)
+         return False
+
+
+   def addMenu(self, menu_name, isAvailable):
+
+      try:
+
+         #Adding Menu
+         sql1 = 'INSERT INTO menu(menu_name, isAvailable) VALUES("{0}","{1}");'.format(menu_name, isAvailable)
+         self.cursor.execute(sql1)
+         self.conection.commit()
+
+         print(sql1, flush=True)
+
+         return True
+
+      except :
+         print('Error occurred on addMenu()', flush=True)
+         print('Error = ',str(sys.exc_info()[0]), flush=True)
+         return False
+
+
+   def addTable(self, table_no, chair, vacancy):
+
+      try:
+
+         #Adding Table
+         sql1 = 'INSERT INTO table(table_no, chair, vacancy) VALUES("{0}",{1}, "{2}");'.format(table_no, chair, vacancy)
+         self.cursor.execute(sql1)
+         self.conection.commit()
+
+         print(sql1, flush=True)
+
+         return True
+
+      except :
+         print('Error occurred on addTable()', flush=True)
+         print('Error = ',str(sys.exc_info()[0]), flush=True)
+         return False
+
+
+   def addOffer(self, discount, date_from, date_to):
+
+      try:
+
+         #Addin Menu
+         sql1 = 'INSERT INTO offers(discount,date_from, date_to) VALUES({0},"{1}","{2}");'.format(discount, date_from, date_to)
+         self.cursor.execute(sql1)
+         self.conection.commit()
+
+         print(sql1, flush=True)
+
+         return True
+
+      except :
+         print('Error occured on addOffer()', flush=True)
+         print('Error = ',str(sys.exc_info()[0]), flush=True)
+         return False
+
+
+   def addDish(self, dishName, dishPrice, dishDes, dishPic, isAvailable):
+
+      try:
+
+         #Adding Dish
+         sql1 = 'INSERT INTO dish(dish_name, dish_price, dish_des, dish_pic, isAvailable) VALUES("{0}",{1},"{2}","{3}","{4}");'.format(dishName, dishPrice, dishDes, dishPic,  isAvailable)
+         self.cursor.execute(sql1)
+         self.conection.commit()
+
+         print(sql1, flush=True)
+
+         return True
+
+      except :
+         print('Error occured on addDish()', flush=True)
+         print('Error = ',str(sys.exc_info()[0]), flush=True)
+         return False
+
+   def getValidateLogin(self, email, passs):
+      sql = 'SELECT * from login WHERE email = "{0}";'.format(email)
+      self.cursor.execute(sql)
+      data = self.cursor.fetchall()
+
+      if len(data)>0:
+         print(data)
+         id = data[0]['user_id']
+         emailed = data[0]['email']
+         passed = data[0]['password']
+
+         if email == emailed and passed == hashlib.md5(passs.encode()):
+            return id, True
+         else:
+            return id, False
+
+      else:
+         return -1, False
+
+   def getAllEmployee(self):
+      sql = 'SELECT * from users WHERE type = "EMP";'
+      self.cursor.execute(sql)
+      data = self.cursor.fetchall()
+
+      if len(data)>0:
+        return data, True
+
+      else:
+         return data, False
+
+   def getAllStock(self):
+      sql = 'SELECT * from product;'
+      self.cursor.execute(sql)
+      data = self.cursor.fetchall()
+
+      if len(data)>0:
+        return data, True
+      else:
+         return data, False
 
 @app.route('/')
 def index():
@@ -69,9 +216,7 @@ def manager_emp_work():
 def manager_msg():
    return render_template('manager_msg.html')
 
-@app.route('/Manager/Add/Employee')
-def manager_add_emp():
-   return render_template('manager_add_emp.html')
+
 
 @app.route('/Manager/Add/Menu')
 def manager_add_menu():
@@ -102,25 +247,38 @@ def sales_order():
 def sales_invoice():
    return render_template('salesman_invoice.html')
 
+
+@app.route('/Manager/Add/Employee')
+def manager_add_emp():
+   return render_template('manager_add_emp.html')
+
 @app.route('/Manager/Add/EmployeeAdd',methods = ['POST', 'GET'])
 def manager_add_emp_form():
    if request.method == 'POST':
       EmployeeName = request.form['EmployeeName']
-      passwEmployeePhoneNumberord = request.form['EmployeePhoneNumber']
+      EmployeePhoneNumber = request.form['EmployeePhoneNumber']
       EmployeeAddress = request.form['EmployeeAddress']
       EmployeeEmail = request.form['EmployeeEmail']
       EmployeePass = request.form['EmployeePass01']
 
-      log = EmployeeName +"  "+passwEmployeePhoneNumberord+" "+EmployeeAddress+" "+EmployeeEmail+" "+EmployeePass
+      log = EmployeeName +" "+EmployeePhoneNumber+" "+EmployeeAddress+" "+EmployeeEmail+" "+EmployeePass
       print(log, flush=True)
 
       db = DatabaseByPyMySQL()
-      if(db.isEmailExist(EmployeeEmail)):
+
+      if db.isEmailExist(EmployeeEmail):
          print(" USER EXIST ", flush=True)
+         return render_template('manager_add_emp.html', msg='user_exist')
       else:
          print(" USER IS NEW ", flush=True)
+         feedback = db.addNewEmployee(name=EmployeeName, email=EmployeeEmail, address=EmployeeAddress, phone=EmployeePhoneNumber, passwd=EmployeePass)
 
-   return render_template('manager_add_emp.html')
+         if feedback:
+            return render_template('manager_add_emp.html', msg='success')
+         else:
+            return render_template('manager_add_emp.html', msg='failed')
+
+
 
 
 
