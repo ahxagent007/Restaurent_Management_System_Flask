@@ -37,7 +37,6 @@
                         <table class="table">
                             <thead class="bg-light">
                                 <tr class="border-0">
-                                    <th class="border-0">#</th>
                                     <th class="border-0">Order ID</th>
                                     <th class="border-0">Bill</th>
                                     <th class="border-0">Order Time</th>
@@ -46,14 +45,15 @@
                                 </tr>
                             </thead>
                             <tbody>
+                            {% for order in data['RecentOrders'] %}
                                 <tr>
-                                    <td>1</td>
-                                    <td>id000001</td>
-                                    <td>1050</td>
-                                    <td>27-08-2018 01:22:12</td>
-                                    <td>Nibir</td>
+                                    <td>{{order['order_id']}}</td>
+                                    <td>{{order['total_bill']}}</td>
+                                    <td>{{order['order_date']}}</td>
+                                    <td>{{order['name']}}</td>
                                     <td><span class="badge-dot badge-success mr-1"></span>DONE</td>
                                 </tr>
+                            {% endfor %}
 
                                 <tr>
                                     <td colspan="9"><a href="#" class="btn btn-outline-light float-right">View Details</a></td>

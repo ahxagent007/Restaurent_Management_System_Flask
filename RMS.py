@@ -70,7 +70,6 @@ class DatabaseByPyMySQL:
          print('Error = ',str(sys.exc_info()[0]), flush=True)
          return False
 
-
    def addMenu(self, menu_name, isAvailable):
 
       try:
@@ -88,7 +87,6 @@ class DatabaseByPyMySQL:
          print('Error occurred on addMenu()', flush=True)
          print('Error = ',str(sys.exc_info()[0]), flush=True)
          return False
-
 
    def addTable(self, table_no, chair, vacancy):
 
@@ -108,7 +106,6 @@ class DatabaseByPyMySQL:
          print('Error = ',str(sys.exc_info()[0]), flush=True)
          return False
 
-
    def addOffer(self, discount, date_from, date_to):
 
       try:
@@ -126,7 +123,6 @@ class DatabaseByPyMySQL:
          print('Error occured on addOffer()', flush=True)
          print('Error = ',str(sys.exc_info()[0]), flush=True)
          return False
-
 
    def addDish(self, dishName, dishPrice, dishDes, dishPic, isAvailable):
 
@@ -186,15 +182,39 @@ class DatabaseByPyMySQL:
       else:
          return data, False
 
+   def getRangeOrdersDetails(self, page, range):
+      fromm = page * range;
+      sql = 'SELECT * FROM flask_db.order LIMIT {0}, {1};'.format(fromm, range)
+      sql_all = 'SELECT user_order.order_id, user_order.user_id, user_order.pay_id, order_date, total_bill, VAT,phone_no, email, type, address, name FROM flask_db.order INNER JOIN user_order ON user_order.order_id = flask_db.order.order_id INNER JOIN users ON users.user_id = user_order.user_id LIMIT {0}, {1};'.format(fromm, range)
+      self.cursor.execute(sql_all)
+      data = self.cursor.fetchall()
+
+      print('getRangeOrdersDetails data type : ',type(data), flush=True)
+      print('data : ', str(data), flush=True)
+
+      if len(data)>0:
+        return data, True
+      else:
+         return data, False
+
 @app.route('/')
 def index():
 
    return 'INDEX'
 
 
+
 @app.route('/Manager')
 def manager_dashboard():
-   return render_template('manager.html')
+
+   db = DatabaseByPyMySQL()
+   RecentOrders, notEmpty = db.getRangeOrdersDetails(page=0, range=20)
+
+   data = {
+      'RecentOrders' : RecentOrders
+   }
+
+   return render_template('manager.html', data=data)
 
 @app.route('/Manager/Sales')
 def manager_sales():
