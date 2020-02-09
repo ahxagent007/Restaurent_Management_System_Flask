@@ -197,6 +197,21 @@ class DatabaseByPyMySQL:
       else:
          return data, False
 
+   def getAllMsg(self, page, range, uid):
+      fromm = page * range;
+      sql = 'SELECT * FROM flask_db.message JOIN flask_db.users ON users.user_id = message.from_user WHERE to_user = {0}  LIMIT {1}, {2};'.format(uid, fromm, range)
+
+      self.cursor.execute(sql)
+      data = self.cursor.fetchall()
+
+      print('getAllMsg data type : ', type(data), flush=True)
+      print('data : ', str(data), flush=True)
+
+      if len(data) > 0:
+         return data, True
+      else:
+         return data, False
+
 @app.route('/')
 def index():
 
@@ -218,7 +233,14 @@ def manager_dashboard():
 
 @app.route('/Manager/Sales')
 def manager_sales():
-   return render_template('manager_sales.html')
+   db = DatabaseByPyMySQL()
+   RecentOrders, notEmpty = db.getRangeOrdersDetails(page=0, range=20)
+
+   data = {
+      'RecentOrders': RecentOrders
+   }
+
+   return render_template('manager_sales.html', data=data)
 
 @app.route('/Manager/Stock')
 def manager_stock():
@@ -226,7 +248,16 @@ def manager_stock():
 
 @app.route('/Manager/EmpAll')
 def manager_emp_all():
-   return render_template('manager_emp_all.html')
+
+   db = DatabaseByPyMySQL()
+
+   AllEmployee, notEmpty = db.getAllEmployee()
+
+   data = {
+      'AllEmp': AllEmployee
+   }
+
+   return render_template('manager_emp_all.html', data=data)
 
 @app.route('/Manager/EmpWork')
 def manager_emp_work():
@@ -234,13 +265,38 @@ def manager_emp_work():
 
 @app.route('/Manager/Message')
 def manager_msg():
-   return render_template('manager_msg.html')
+
+   db = DatabaseByPyMySQL()
+   all_msg, isEmpty = db.getAllMsg(uid=1,page=0, range=10)
+   data = {
+      'msg': all_msg
+   }
+   return render_template('manager_msg.html', data=data)
 
 
 
 @app.route('/Manager/Add/Menu')
 def manager_add_menu():
    return render_template('manager_add_menu.html')
+
+@app.route('/Manager/Add/MenuForm', methods = ['POST'])
+def manager_add_menu_form():
+   if request.method == 'POST':
+      MenuName = request.form['MenuName']
+      availability = request.form['Availability']
+      log = MenuName, availability
+      print(log, flush=True)
+
+      db = DatabaseByPyMySQL()
+
+      status = db.addMenu(menu_name=MenuName, isAvailable=availability)
+
+      if(status):
+         return render_template('manager_add_menu.html', msg='success')
+      else:
+         return render_template('manager_add_menu.html', msg = 'failed')
+
+
 
 @app.route('/Manager/Add/Dish')
 def manager_add_dish():
@@ -272,7 +328,7 @@ def sales_invoice():
 def manager_add_emp():
    return render_template('manager_add_emp.html')
 
-@app.route('/Manager/Add/EmployeeAdd',methods = ['POST', 'GET'])
+@app.route('/Manager/Add/EmployeeAdd',methods = ['POST'])
 def manager_add_emp_form():
    if request.method == 'POST':
       EmployeeName = request.form['EmployeeName']
