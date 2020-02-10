@@ -1,13 +1,24 @@
+import os
 import sys
 
-from flask import Flask, render_template, request
+import app as app
+from django.shortcuts import redirect
+from flask import Flask, render_template, request, flash, url_for, send_from_directory
 import pymysql
 import hashlib
+import time
 
-#db = pymysql.connect("localhost", "root", "", "flask_db")
+from werkzeug.utils import secure_filename
 
+
+UPLOAD_FOLDER = 'UPLOADS/'
+ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'}          #{'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'}
 
 app = Flask(__name__, template_folder='templates', static_folder='static')
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+
+#Lambda Function
+current_milli_time = lambda: int(round(time.time() * 1000))
 
 class DatabaseByPyMySQL:
    def __init__(self):
@@ -298,9 +309,43 @@ def manager_add_menu_form():
 
 
 
-@app.route('/Manager/Add/Dish')
+@app.route('/Manager/Add/Dish', methods = ['POST', 'GET'])
 def manager_add_dish():
+
+   if request.method == 'POST':
+      # check if the post request has the file part
+      if 'dishPic' not in request.files:
+         flash('No file part')
+         return redirect(request.url)
+      file = request.files['dishPic']
+      # if user does not select file, browser also
+      # submit an empty part without filename
+      if file.filename == '':
+         flash('No selected file')
+         return redirect(request.url)
+
+      if file and allowed_file(file.filename):
+         filename = secure_filename(file.filename)
+         filename = str(current_milli_time())+filename[-4:]
+         file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+
+         DishName = request.form['DishName']
+         DishDes = request.form['DishDes']
+         DishPrice = request.form['DishPrice']
+         isAvailable = request.form['isAvailable']
+
+         db = DatabaseByPyMySQL()
+         status = db.addDish(dishName=DishName, dishDes=DishDes, dishPrice=DishPrice, dishPic=filename, isAvailable=isAvailable)
+
+         print(str(status), flush=True)
+         return render_template('manager_add_dish.html', msg = str(status))
+
    return render_template('manager_add_dish.html')
+
+
+def allowed_file(filename):
+   return '.' in filename and \
+          filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 @app.route('/Manager/Add/Table')
 def manager_add_table():
