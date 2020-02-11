@@ -135,7 +135,7 @@ class DatabaseByPyMySQL:
          print('Error = ',str(sys.exc_info()[0]), flush=True)
          return False
 
-   def addDish(self, dishName, dishPrice, dishDes, dishPic, isAvailable):
+   def addDish(self, dishName, dishPrice, dishDes, dishPic, isAvailable, menu_id):
 
       try:
 
@@ -145,6 +145,18 @@ class DatabaseByPyMySQL:
          self.conection.commit()
 
          print(sql1, flush=True)
+
+         #getting the last id
+         sql = 'SELECT TOP(1) dish_id from dish order by dish_id DESC;'
+         self.cursor.execute(sql)
+         data = self.cursor.fetchall()
+         print(data, flush=True)
+         dish_id = data['dish_id']
+
+         # Adding Dish_Menu
+         sql2 = 'INSERT INTO dish_menu(dish_id, menu_id) VALUES({0},{1});'.format(dish_id, menu_id)
+         self.cursor.execute(sql2)
+         self.conection.commit()
 
          return True
 
@@ -216,6 +228,22 @@ class DatabaseByPyMySQL:
       data = self.cursor.fetchall()
 
       print('getAllMsg data type : ', type(data), flush=True)
+      print('data : ', str(data), flush=True)
+
+      if len(data) > 0:
+         return data, True
+      else:
+         return data, False
+
+
+
+   def getAllMenu(self):
+      sql = 'SELECT * FROM flask_db.menu ;'
+
+      self.cursor.execute(sql)
+      data = self.cursor.fetchall()
+
+      print('getAllMenu data type : ', type(data), flush=True)
       print('data : ', str(data), flush=True)
 
       if len(data) > 0:
@@ -333,14 +361,20 @@ def manager_add_dish():
          DishDes = request.form['DishDes']
          DishPrice = request.form['DishPrice']
          isAvailable = request.form['isAvailable']
+         DishMenu = request.form['DishMenu']
 
          db = DatabaseByPyMySQL()
-         status = db.addDish(dishName=DishName, dishDes=DishDes, dishPrice=DishPrice, dishPic=filename, isAvailable=isAvailable)
+         status = db.addDish(dishName=DishName, dishDes=DishDes, dishPrice=DishPrice, dishPic=filename, isAvailable=isAvailable, menu_id=DishMenu)
 
          print(str(status), flush=True)
          return render_template('manager_add_dish.html', msg = str(status))
 
-   return render_template('manager_add_dish.html')
+   db = DatabaseByPyMySQL()
+   menu, booll = db.getAllMenu()
+   data = {
+      'menu':menu
+   }
+   return render_template('manager_add_dish.html', data= data)
 
 
 def allowed_file(filename):
