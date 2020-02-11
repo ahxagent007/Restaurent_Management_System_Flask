@@ -104,7 +104,7 @@ class DatabaseByPyMySQL:
       try:
 
          #Adding Table
-         sql1 = 'INSERT INTO table(table_no, chair, vacancy) VALUES("{0}",{1}, "{2}");'.format(table_no, chair, vacancy)
+         sql1 = 'INSERT INTO flask_db.table(table_no, chair, vacancy) VALUES("{0}",{1}, "{2}");'.format(table_no, chair, vacancy)
          self.cursor.execute(sql1)
          self.conection.commit()
 
@@ -117,12 +117,12 @@ class DatabaseByPyMySQL:
          print('Error = ',str(sys.exc_info()[0]), flush=True)
          return False
 
-   def addOffer(self, discount, date_from, date_to):
+   def addOffer(self, offerName, discount, date_from, date_to):
 
       try:
 
          #Addin Menu
-         sql1 = 'INSERT INTO offers(discount,date_from, date_to) VALUES({0},"{1}","{2}");'.format(discount, date_from, date_to)
+         sql1 = 'INSERT INTO offers(offer_name, discount,date_from, date_to) VALUES("{3}",{0},"{1}","{2}");'.format(discount, date_from, date_to, offerName)
          self.cursor.execute(sql1)
          self.conection.commit()
 
@@ -147,11 +147,12 @@ class DatabaseByPyMySQL:
          print(sql1, flush=True)
 
          #getting the last id
-         sql = 'SELECT TOP(1) dish_id from dish order by dish_id DESC;'
+         sql = 'SELECT dish_id from dish order by dish_id DESC LIMIT 1;'
          self.cursor.execute(sql)
          data = self.cursor.fetchall()
          print(data, flush=True)
-         dish_id = data['dish_id']
+         dish_id = int(data[0]['dish_id'])
+         print(str(dish_id), flush=True)
 
          # Adding Dish_Menu
          sql2 = 'INSERT INTO dish_menu(dish_id, menu_id) VALUES({0},{1});'.format(dish_id, menu_id)
@@ -339,7 +340,11 @@ def manager_add_menu_form():
 
 @app.route('/Manager/Add/Dish', methods = ['POST', 'GET'])
 def manager_add_dish():
-
+   db = DatabaseByPyMySQL()
+   menu, booll = db.getAllMenu()
+   data = {
+      'menu': menu
+   }
    if request.method == 'POST':
       # check if the post request has the file part
       if 'dishPic' not in request.files:
@@ -367,13 +372,9 @@ def manager_add_dish():
          status = db.addDish(dishName=DishName, dishDes=DishDes, dishPrice=DishPrice, dishPic=filename, isAvailable=isAvailable, menu_id=DishMenu)
 
          print(str(status), flush=True)
-         return render_template('manager_add_dish.html', msg = str(status))
+         return render_template('manager_add_dish.html', msg = str(status), data=data)
 
-   db = DatabaseByPyMySQL()
-   menu, booll = db.getAllMenu()
-   data = {
-      'menu':menu
-   }
+
    return render_template('manager_add_dish.html', data= data)
 
 
@@ -381,12 +382,41 @@ def allowed_file(filename):
    return '.' in filename and \
           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
-@app.route('/Manager/Add/Table')
+@app.route('/Manager/Add/Table', methods=['POST', 'GET'])
 def manager_add_table():
+   if request.method == 'POST':
+      TableNo = request.form['TableNo']
+      Chair = request.form['NumberChair']
+
+      db = DatabaseByPyMySQL()
+
+      status = db.addTable(table_no=TableNo, chair=Chair, vacancy='YES')
+
+      if(status):
+         return render_template('manager_add_table.html', msg='success')
+      else:
+         return render_template('manager_add_table.html', msg = 'failed')
+
+
    return render_template('manager_add_table.html')
 
-@app.route('/Manager/Add/Offers')
+@app.route('/Manager/Add/Offers', methods=['POST', 'GET'])
 def manager_add_offers():
+   if request.method == 'POST':
+      OfferName = request.form['OfferName']
+      OfferDis = request.form['OfferDis']
+      Offer_from = request.form['Offer_from']
+      Offer_to = request.form['Offer_to']
+
+      db = DatabaseByPyMySQL()
+
+      status = db.addOffer(offerName=OfferName, discount=OfferDis, date_from=Offer_from, date_to=Offer_to)
+
+      if(status):
+         return render_template('manager_add_offers.html', msg='success')
+      else:
+         return render_template('manager_add_offers.html', msg = 'failed')
+
    return render_template('manager_add_offers.html')
 
 
