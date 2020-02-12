@@ -154,9 +154,9 @@
 
         <!-- Optional JavaScript -->
         <!-- jquery 3.3.1 -->
-        <script type="text/javascript" src="{{ url_for('static', filename='vendor/jquery/jquery-3.3.1.min.js') }}"></script>
+        <script type="text/javascript" src="{{ url_for('static', filename='vendor/jquery/jquery-3.4.1.js') }}"></script>
         <!-- bootstap bundle js -->
-        <script type="text/javascript" src="{{ url_for('static', filename='vendor/bootstrap/js/bootstrap.bundle.js') }}}"></script>
+        <script type="text/javascript" src="{{ url_for('static', filename='vendor/bootstrap/js/bootstrap.bundle.js') }}"></script>
         <!-- slimscroll js -->
         <script type="text/javascript" src="{{ url_for('static', filename='vendor/slimscroll/jquery.slimscroll.js') }}"></script>
         <!-- main js -->
@@ -175,9 +175,13 @@
         <script type="text/javascript" src="{{ url_for('static', filename='libs/js/dashboard-ecommerce.js') }}"></script>
 
 
+        <script type="text/javascript" src="{{ url_for('static', filename='libs/js/jquery.miranda.min.js') }}"></script>
+        <script type="text/javascript" src="{{ url_for('static', filename='libs/js/jput.min.js') }}"></script>
+
+
 
     <!-- custom JS -->
-    <script>
+    {% block customJS %} {% endblock %}
 
 </body>
 

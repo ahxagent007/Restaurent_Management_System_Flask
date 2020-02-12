@@ -3,7 +3,7 @@ import sys
 
 import app as app
 from django.shortcuts import redirect
-from flask import Flask, render_template, request, flash, url_for, send_from_directory
+from flask import Flask, render_template, request, flash, url_for, send_from_directory, jsonify
 import pymysql
 import hashlib
 import time
@@ -252,6 +252,22 @@ class DatabaseByPyMySQL:
       else:
          return data, False
 
+
+
+   def getDishByName(self, dish_name):
+      sql = 'SELECT * FROM flask_db.dish WHERE dish_name LIKE "%{0}%";'.format(dish_name)
+
+      self.cursor.execute(sql)
+      data = self.cursor.fetchall()
+
+      print('getDishByName data type : ', type(data), flush=True)
+      print('data : ', str(data), flush=True)
+
+      if len(data) > 0:
+         return data, True
+      else:
+         return data, False
+
 @app.route('/')
 def index():
 
@@ -422,11 +438,35 @@ def manager_add_offers():
 
 @app.route('/Sales')
 def sales_dashboard():
-   return render_template('salesman.html')
+   db = DatabaseByPyMySQL()
+   RecentOrders, notEmpty = db.getRangeOrdersDetails(page=0, range=20)
 
-@app.route('/Sales/Order')
+   data = {
+      'RecentOrders': RecentOrders
+   }
+
+   return render_template('salesman.html', data=data)
+
+@app.route('/Sales/Order', methods=['GET', 'POST'])
 def sales_order():
+
    return render_template('salesman_order.html')
+
+@app.route('/Sales/Order/LiveSearch', methods=['POST'])
+def sales_order_live_search():
+   searchText = request.form.get('search_text')
+
+   db = DatabaseByPyMySQL()
+   search_result, found = db.getDishByName(searchText)
+
+   if found:
+      print('FOUND DISHES =  ' + str(len(search_result)), flush=True)
+      return jsonify(search_result)
+   else:
+      print('NOTTT FOUND ANY DISH!! ', flush=True)
+
+
+
 
 @app.route('/Sales/Invoice')
 def sales_invoice():
