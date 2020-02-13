@@ -9,7 +9,7 @@ import hashlib
 import time
 
 from werkzeug.utils import secure_filename
-
+from werkzeug.wrappers import json
 
 UPLOAD_FOLDER = 'UPLOADS/'
 ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'}          #{'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'}
@@ -452,7 +452,7 @@ def sales_order():
 
    return render_template('salesman_order.html')
 
-@app.route('/Sales/Order/LiveSearch', methods=['POST'])
+@app.route('/Sales/Order/LiveSearch', methods=['POST', 'GET'])
 def sales_order_live_search():
    searchText = request.form.get('search_text')
 
@@ -465,6 +465,15 @@ def sales_order_live_search():
    else:
       print('NOTTT FOUND ANY DISH!! ', flush=True)
 
+@app.route("/search", methods=['POST'])
+def search():
+   search_text = request.args['search_text'] # get the text to search for
+   # create an array with the elements of BRAZIL_STATES that contains the string
+   # the case is ignored
+   db = DatabaseByPyMySQL()
+   result, found = db.getDishByName(search_text)
+   # return as JSON
+   return json.dumps({"results" : result})
 
 
 
