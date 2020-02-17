@@ -464,6 +464,7 @@ def sales_order_live_search():
       return jsonify(search_result)
    else:
       print('NOTTT FOUND ANY DISH!! ', flush=True)
+      return jsonify("")
 
 @app.route("/search", methods=['POST'])
 def search():
