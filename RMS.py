@@ -11,7 +11,7 @@ import time
 from werkzeug.utils import secure_filename
 from werkzeug.wrappers import json
 
-UPLOAD_FOLDER = 'UPLOADS/'
+UPLOAD_FOLDER = 'static/UPLOADS/'
 ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'}          #{'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'}
 
 app = Flask(__name__, template_folder='templates', static_folder='static')
