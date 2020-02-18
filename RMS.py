@@ -456,15 +456,20 @@ def sales_order():
 def sales_order_live_search():
    searchText = request.form.get('search_text')
 
-   db = DatabaseByPyMySQL()
-   search_result, found = db.getDishByName(searchText)
-
-   if found:
-      print('FOUND DISHES =  ' + str(len(search_result)), flush=True)
-      return jsonify(search_result)
+   if len(searchText)>0:
+      db = DatabaseByPyMySQL()
+      search_result, found = db.getDishByName(searchText)
+      if found:
+         print('FOUND DISHES =  ' + str(len(search_result)), flush=True)
+         return jsonify(search_result)
+      else:
+         print('NOTTT FOUND ANY DISH!! ', flush=True)
+         return jsonify("")
    else:
-      print('NOTTT FOUND ANY DISH!! ', flush=True)
-      return jsonify("")
+         print('NOTTT FOUND ANY DISH!! ', flush=True)
+         return jsonify("")
+
+
 
 @app.route("/search", methods=['POST'])
 def search():
