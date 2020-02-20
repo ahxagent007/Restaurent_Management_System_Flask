@@ -1,3 +1,4 @@
+import datetime
 import os
 import sys
 
@@ -82,9 +83,7 @@ class DatabaseByPyMySQL:
          return False
 
    def addMenu(self, menu_name, isAvailable):
-
       try:
-
          #Adding Menu
          sql1 = 'INSERT INTO menu(menu_name, isAvailable) VALUES("{0}","{1}");'.format(menu_name, isAvailable)
          self.cursor.execute(sql1)
@@ -236,8 +235,6 @@ class DatabaseByPyMySQL:
       else:
          return data, False
 
-
-
    def getAllMenu(self):
       sql = 'SELECT * FROM flask_db.menu ;'
 
@@ -251,8 +248,6 @@ class DatabaseByPyMySQL:
          return data, True
       else:
          return data, False
-
-
 
    def getDishByName(self, dish_name):
       sql = 'SELECT * FROM flask_db.dish WHERE dish_name LIKE "%{0}%";'.format(dish_name)
@@ -268,12 +263,27 @@ class DatabaseByPyMySQL:
       else:
          return data, False
 
+   def addOrder(self, order):
+      try:
+         currentDT = datetime.datetime.now()
+         #Adding ORder
+         sql1 = 'INSERT INTO order(total_bill, order_date) VALUES({0}, "{1}");'.format(order['totalBill'], currentDT.strftime("%d-%m-%Y %H:%M:%S") )
+         self.cursor.execute(sql1)
+         self.conection.commit()
+
+         print(sql1, flush=True)
+
+         return True
+
+      except :
+         print('Error occurred on addOrder()', flush=True)
+         print('Error = ',str(sys.exc_info()[0]), flush=True)
+         return False
+
 @app.route('/')
 def index():
 
    return 'INDEX'
-
-
 
 @app.route('/Manager')
 def manager_dashboard():
@@ -328,7 +338,6 @@ def manager_msg():
       'msg': all_msg
    }
    return render_template('manager_msg.html', data=data)
-
 
 
 @app.route('/Manager/Add/Menu')
@@ -469,6 +478,19 @@ def sales_order_live_search():
          print('NOTTT FOUND ANY DISH!! ', flush=True)
          return jsonify("")
 
+@app.route('/Sales/Order/Done', methods =['POST'])
+def order_Done():
+   if request.method == 'POST':
+      order_list_json = request.json
+
+      print(order_list_json, flush=True)
+
+      #db = DatabaseByPyMySQL()
+      #db.addOrder(order_list_json)
+
+      print(order_list_json['totalBill'], flush=True)
+
+   return render_template('salesman_invoice.html')
 
 
 @app.route("/search", methods=['POST'])
