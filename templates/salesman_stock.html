@@ -1,0 +1,120 @@
+
+{% extends 'base_salesman.html' %}
+
+{% block title %}
+    <title>RMS - Sales</title>
+{% endblock %}
+
+{% block page_header %}
+
+    <h2 class="pageheader-title">Stock</h2>
+
+    <div class="page-breadcrumb">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item" aria-current="page"><a href="" class="breadcrumb-link">Stock</a></li>
+            </ol>
+        </nav>
+    </div>
+
+{% endblock %}
+
+
+{% block content %}
+
+        {% if msg == 'True'  %}
+            <div class="card-body border-top">
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    <strong>Sucess!</strong> Quantity Updated.
+                    <a href="#" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </a>
+                </div>
+            </div>
+        {% elif msg == 'False' %}
+                <div class="card-body border-top">
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <strong>Something went wrong!</strong> Try Aganin!!!
+                        <a href="#" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </a>
+                    </div>
+                </div>
+
+        {% endif %}
+
+
+    <row>
+       <!-- ============================================================== -->
+
+        <!-- ============================================================== -->
+
+                      <!-- Stock  -->
+        <!-- ============================================================== -->
+        <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+            <div class="card">
+                <h5 class="card-header">Stock</h5>
+                <div class="card-body p-0">
+                    <form action="{{url_for('sales_stock')}}" id="basicform" data-parsley-validate="" method="post" enctype=multipart/form-data>
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead class="bg-light">
+                                    <tr class="border-0">
+                                        <th class="border-0">ID</th>
+                                        <th class="border-0">Image</th>
+                                        <th class="border-0">Name</th>
+                                        <th class="border-0">Description</th>
+                                        <th class="border-0">Quantity</th>
+                                        <th class="border-0">Action</th>
+                                    </tr>
+                                </thead>
+
+                                    <tbody>
+                                    {% for product in data['stock']%}
+                                        <tr>
+                                            <td>{{product['product_id']}}</td>
+
+                                            <td>
+                                                <div class="m-r-10"><img src="../static/UPLOADS/{{product['product_pic']}}" alt="{{product['product_id']}}" class="rounded" width="45"></div>
+                                            </td>
+
+                                            <td>{{product['product_name']}}</td>
+                                            <td>{{product['product_des']}}</td>
+
+                                            <td><input name="input{{product['product_id']}}" type="number" placeholder="{{product['product_quantity']}}" autocomplete="off" class="form-control"></td>
+                                            <td>
+                                                <p class="text-right">
+                                                    <button type="submit" name="updateBTN" class="btn btn-space btn-primary" value="{{product['product_id']}}">Update</button>
+                                                </p>
+                                            </td>
+
+                                        </tr>
+
+                                    {% endfor %}
+
+
+
+                                        <tr>
+                                            <td colspan="9"><a href="#" class="btn btn-outline-light float-right">View All</a></td>
+                                        </tr>
+                                    </tbody>
+
+
+                            </table>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <!-- ============================================================== -->
+        <!-- Stock  -->
+
+
+        <!-- ============================================================== -->
+        <!-- ============================================================== -->
+        <!-- ============================================================== -->
+    </row>
+
+{% endblock %}
+
+
