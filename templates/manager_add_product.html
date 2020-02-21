@@ -23,7 +23,7 @@
     {% if msg == 'True'  %}
         <div class="card-body border-top">
             <div class="alert alert-success alert-dismissible fade show" role="alert">
-                <strong>Sucess!</strong> Dish added.
+                <strong>Sucess!</strong> Product added.
                 <a href="#" class="close" data-dismiss="alert" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </a>
@@ -44,33 +44,22 @@
     <row>
         <div class="col-xl-12 col-lg-6 col-md-12 col-sm-12 col-12">
             <div class="card">
-                <h5 class="card-header">Add Dish</h5>
+                <h5 class="card-header">Add Product</h5>
                 <div class="card-body">
-                    <form action="{{url_for('manager_add_dish')}}" id="basicform" data-parsley-validate="" method="post" enctype=multipart/form-data>
+                    <form action="{{url_for('manager_add_product')}}" id="basicform" data-parsley-validate="" method="post" enctype=multipart/form-data>
                         <div class="form-group">
-                            <label for="DishName">Dish Name</label>
-                            <input id="DishName" type="text" name="DishName" data-parsley-trigger="change" required="" placeholder="Enter dish name" autocomplete="off" class="form-control">
+                            <label for="ProducName">Product Name</label>
+                            <input id="ProducName" type="text" name="DishName" data-parsley-trigger="change" required="" placeholder="Product name" autocomplete="off" class="form-control">
                         </div>
 
                         <div class="form-group">
-                            <label for="DishDes">Dish Desciption</label>
-                            <input id="DishDes" type="text" name="DishDes" data-parsley-trigger="change" required="" placeholder="Enter dish Desciption" autocomplete="off" class="form-control">
+                            <label for="ProductDes">Product Desciption</label>
+                            <input id="ProductDes" type="text" name="DishDes" data-parsley-trigger="change" required="" placeholder="Product Desciption" autocomplete="off" class="form-control">
                         </div>
 
                         <div class="form-group">
-                            <label for="DishPrice" class="col-form-label">Price</label>
-                            <input id="DishPrice" type="number" class="form-control" placeholder="Price" name="DishPrice">
-                        </div>
-
-                        <div class="form-group">
-                            <label for="DishMenu">Choose Menu:</label>
-
-                            <select id="DishMenu" name="DishMenu" class="form-control">
-                                {% for menu in data['menu'] %}
-                              <option value="{{menu['menu_id']}}">{{menu['menu_name']}}</option>
-                                {% endfor %}
-                            </select>
-
+                            <label for="ProductQuantity" class="col-form-label">Quantity</label>
+                            <input id="ProductQuantity" type="number" class="form-control" placeholder="Quantity" name="DishPrice">
                         </div>
 
                         <div class="custom-file mb-3">
@@ -79,15 +68,16 @@
                         </div>
 
                         <div class="form-group">
-                            <label >Availibility of a Dish</label>
-                            <div class="custom-control custom-radio">
-                                <input type="radio" class="custom-control-input is-valid" id="customControlValidation3" name="isAvailable" required value="Available">
-                                <label class="custom-control-label" for="customControlValidation3">Available</label>
-                            </div>
-                            <div class="custom-control custom-radio">
-                                <input type="radio" class="custom-control-input is-invalid" id="customControlValidation4" name="isAvailable" required value="Unavailable">
-                                <label class="custom-control-label" for="customControlValidation4">Unavailable</label>
-                            </div>
+                            <label for="ProductCategory">Choose Category:</label>
+
+                            <select id="ProductCategory" name="ProductCategory" class="form-control">
+
+                              <option value="Vegitable">Vegitable</option>
+                              <option value="Vegitable">kitchen</option>
+                              <option value="Vegitable">Others</option>
+
+                            </select>
+
                         </div>
 
 
