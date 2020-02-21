@@ -139,14 +139,15 @@ class DatabaseByPyMySQL:
 
       try:
 
-         #Adding Dish
-         sql1 = 'INSERT INTO dish(dish_name, dish_price, dish_des, dish_pic, isAvailable) VALUES("{0}",{1},"{2}","{3}","{4}");'.format(dishName, dishPrice, dishDes, dishPic,  isAvailable)
+         # Adding Dish
+         sql1 = 'INSERT INTO dish(dish_name, dish_price, dish_des, dish_pic, isAvailable) VALUES("{0}",{1},"{2}","{3}","{4}");'.format(
+            dishName, dishPrice, dishDes, dishPic, isAvailable)
          self.cursor.execute(sql1)
          self.conection.commit()
 
          print(sql1, flush=True)
 
-         #getting the last id
+         # getting the last id
          sql = 'SELECT dish_id from dish order by dish_id DESC LIMIT 1;'
          self.cursor.execute(sql)
          data = self.cursor.fetchall()
@@ -161,9 +162,27 @@ class DatabaseByPyMySQL:
 
          return True
 
-      except :
+      except:
          print('Error occured on addDish()', flush=True)
-         print('Error = ',str(sys.exc_info()[0]), flush=True)
+         print('Error = ', str(sys.exc_info()[0]), flush=True)
+         return False
+
+   def addProduct(self, productName, productDes, productQuantity, productPic, productCat):
+
+      try:
+         # Adding Dish
+         sql = 'INSERT INTO products(product_name, product_des, product_quantity, product_pic, product_cat) VALUES("{0}","{1}",{2},"{3}","{4}");'.format(
+            productName, productDes, productQuantity, productPic, productCat)
+         self.cursor.execute(sql)
+         self.conection.commit()
+
+         print(sql, flush=True)
+
+         return True
+
+      except:
+         print('Error occured on addProduct()', flush=True)
+         print('Error = ', str(sys.exc_info()[0]), flush=True)
          return False
 
    def getValidateLogin(self, email, passs):
@@ -472,10 +491,10 @@ def manager_add_product():
 
    if request.method == 'POST':
       # check if the post request has the file part
-      if 'dishPic' not in request.files:
+      if 'ProductPic' not in request.files:
          flash('No file part')
          return redirect(request.url)
-      file = request.files['dishPic']
+      file = request.files['ProductPic']
       # if user does not select file, browser also
       # submit an empty part without filename
       if file.filename == '':
@@ -487,14 +506,13 @@ def manager_add_product():
          filename = str(current_milli_time())+filename[-4:]
          file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
 
-         DishName = request.form['DishName']
-         DishDes = request.form['DishDes']
-         DishPrice = request.form['DishPrice']
-         isAvailable = request.form['isAvailable']
-         DishMenu = request.form['DishMenu']
+         ProductName = request.form['ProductName']
+         ProductDes = request.form['ProductDes']
+         ProductQuantity = request.form['ProductQuantity']
+         ProductCategory = request.form['ProductCategory']
 
          db = DatabaseByPyMySQL()
-         status = db.addDish(dishName=DishName, dishDes=DishDes, dishPrice=DishPrice, dishPic=filename, isAvailable=isAvailable, menu_id=DishMenu)
+         status = db.addProduct(productName=ProductName, productDes=ProductDes, productQuantity=ProductQuantity, productCat= ProductCategory, productPic=filename)
 
          print(str(status), flush=True)
          return render_template('manager_add_product.html', msg = str(status))
