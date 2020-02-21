@@ -10,7 +10,8 @@ import hashlib
 import time
 
 from werkzeug.utils import secure_filename
-from werkzeug.wrappers import json
+#from werkzeug.wrappers import json
+import json
 
 UPLOAD_FOLDER = 'static/UPLOADS/'
 ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'}          #{'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'}
@@ -263,15 +264,40 @@ class DatabaseByPyMySQL:
       else:
          return data, False
 
+   def getLastId(self, table):
+
+      if table == 'order':
+         sql = 'SELECT order_id FROM flask_db.order ORDER BY order_id DESC LIMIT 1;'
+      elif table == 'users':
+         sql = 'SELECT user_id FROM flask_db.users ORDER BY user_id DESC LIMIT 1;'
+
+
+      self.cursor.execute(sql)
+      data = self.cursor.fetchall()
+
+      print('getLastId data type : ', type(data), flush=True)
+      print('data : ', str(data), flush=True)
+
+      if len(data) > 0:
+         return data, True
+      else:
+         return data, False
+
    def addOrder(self, order):
       try:
          currentDT = datetime.datetime.now()
-         #Adding ORder
-         sql1 = 'INSERT INTO order(total_bill, order_date) VALUES({0}, "{1}");'.format(order['totalBill'], currentDT.strftime("%d-%m-%Y %H:%M:%S") )
-         self.cursor.execute(sql1)
+         #Adding Order
+         sql = 'INSERT INTO order(total_bill, order_date) VALUES({0}, "{1}");'.format(order['totalBill'], currentDT.strftime("%d-%m-%Y %H:%M:%S") )
+         self.cursor.execute(sql)
          self.conection.commit()
+         print(sql, flush=True)
 
-         print(sql1, flush=True)
+         order_id = self.getLastId('order')
+
+         for odr in order['orders']:
+            sql1 = 'INSERT INTO ordered_dishes(order_id, dish_id, order_comment) VALUES({0}, {1}, "{2}");'.format(order_id, odr['id'], odr['comment'])
+            self.cursor.execute(sql1)
+            self.conection.commit()
 
          return True
 
@@ -483,12 +509,12 @@ def order_Done():
    if request.method == 'POST':
       order_list_json = request.json
 
+      print(type(order_list_json), flush=True)
+
       print(order_list_json, flush=True)
 
-      #db = DatabaseByPyMySQL()
-      #db.addOrder(order_list_json)
-
-      print(order_list_json['totalBill'], flush=True)
+      db = DatabaseByPyMySQL()
+      db.addOrder(order_list_json)
 
    return render_template('salesman_invoice.html')
 
