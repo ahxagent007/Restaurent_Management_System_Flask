@@ -50,11 +50,11 @@ class DatabaseByPyMySQL:
       else:
          return False
 
-   def addNewEmployee(self, name, phone, email, address, passwd):
+   def addNewUser(self, name, phone, email, address, passwd, userType):
 
       try:
          # getting the last ID
-         self.cursor.execute("SELECT user_id from users;")
+         self.cursor.execute("SELECT user_id from users ORDER BY user_id DESC LIMIT 1;")
          data = self.cursor.fetchall()
          print('data = ',data, flush=True)
          id = data[0]['user_id']
@@ -63,7 +63,7 @@ class DatabaseByPyMySQL:
          print('user_id == ',str(id), flush=True)
 
          #Adding User
-         sql1 = 'INSERT INTO users(user_id, name, phone_no, email, address, type) VALUES({0},"{1}", "{2}", "{3}", "{4}", "{5}");'.format(id, name, phone, email, address, 'EMP')
+         sql1 = 'INSERT INTO users(user_id, name, phone_no, email, address, type) VALUES({0},"{1}", "{2}", "{3}", "{4}", "{5}");'.format(id, name, phone, email, address, userType)
          self.cursor.execute(sql1)
          self.conection.commit()
 
@@ -79,7 +79,7 @@ class DatabaseByPyMySQL:
          return True
 
       except :
-         print('Error occurred on addNewEmployee()', flush=True)
+         print('Error occurred on addNewUser()', flush=True)
          print('Error = ',str(sys.exc_info()[0]), flush=True)
          return False
 
@@ -209,7 +209,7 @@ class DatabaseByPyMySQL:
    def getRangeOrdersDetails(self, page, range):
       fromm = page * range;
       sql = 'SELECT * FROM flask_db.order LIMIT {0}, {1};'.format(fromm, range)
-      sql_all = 'SELECT user_order.order_id, user_order.user_id, user_order.pay_id, order_date, total_bill, VAT,phone_no, email, type, address, name FROM flask_db.order INNER JOIN user_order ON user_order.order_id = flask_db.order.order_id INNER JOIN users ON users.user_id = user_order.user_id LIMIT {0}, {1};'.format(fromm, range)
+      sql_all = 'SELECT order_id, users.user_id, pay_id, order_date, total_bill, VAT, phone_no, email, type, address, name FROM flask_db.order INNER JOIN users ON users.user_id = flask_db.order.user_id LIMIT {0}, {1};'.format(fromm, range)
       self.cursor.execute(sql_all)
       data = self.cursor.fetchall()
 
@@ -271,7 +271,6 @@ class DatabaseByPyMySQL:
       elif table == 'users':
          sql = 'SELECT user_id FROM flask_db.users ORDER BY user_id DESC LIMIT 1;'
 
-
       self.cursor.execute(sql)
       data = self.cursor.fetchall()
 
@@ -285,18 +284,39 @@ class DatabaseByPyMySQL:
 
    def addOrder(self, order):
       try:
-         currentDT = datetime.datetime.now()
-         #Adding Order
-         sql = 'INSERT INTO order(total_bill, order_date) VALUES({0}, "{1}");'.format(order['totalBill'], currentDT.strftime("%d-%m-%Y %H:%M:%S") )
-         self.cursor.execute(sql)
-         self.conection.commit()
-         print(sql, flush=True)
 
-         order_id = self.getLastId('order')
+         cus, isext = self.isCustomerExist(order['number'])
+
+         if isext:
+            print("CUSTOMER EXIST", flush=True)
+
+            currentDT = datetime.datetime.now()
+            # Adding Order
+            sql = 'INSERT INTO flask_db.order(total_bill, order_date, user_id) VALUES({0}, "{1}", {2});'.format(order['totalBill'], currentDT.strftime("%d-%m-%Y %H:%M:%S"), cus[0]['user_id'])
+            self.cursor.execute(sql)
+            self.conection.commit()
+            print(sql, flush=True)
+
+         else:
+            print("NEW CUSTOMER", flush=True)
+            self.addNewUser(name=order['name'], phone=order['number'], email=order['email'], address=order['address'], passwd=order['number'], userType='CUS')
+
+            cus_id, isId = self.getLastId('users')
+
+            currentDT = datetime.datetime.now()
+            # Adding Order
+            sql = 'INSERT INTO flask_db.order(total_bill, order_date, user_id) VALUES({0}, "{1}", {2});'.format(
+               order['totalBill'], currentDT.strftime("%d-%m-%Y %H:%M:%S"), cus_id[0]['user_id'])
+            self.cursor.execute(sql)
+            self.conection.commit()
+            print(sql, flush=True)
+
+         order_id, isId = self.getLastId('order')
+         print('ORDER ID = ' + str(order_id), flush=True)
 
          for odr in order['orders']:
-            sql1 = 'INSERT INTO ordered_dishes(order_id, dish_id, order_comment) VALUES({0}, {1}, "{2}");'.format(order_id, odr['id'], odr['comment'])
-            self.cursor.execute(sql1)
+            sqll = 'INSERT INTO flask_db.ordered_dishes(order_id, dish_id, order_comment) VALUES({0}, {1}, "{2}");'.format(order_id[0]['order_id'], odr['id'], odr['comment'])
+            self.cursor.execute(sqll)
             self.conection.commit()
 
          return True
@@ -305,6 +325,21 @@ class DatabaseByPyMySQL:
          print('Error occurred on addOrder()', flush=True)
          print('Error = ',str(sys.exc_info()[0]), flush=True)
          return False
+
+   def isCustomerExist(self, mobileNumber):
+
+      sql = 'SELECT * FROM flask_db.users WHERE phone_no = "{0}";'.format(mobileNumber)
+
+      self.cursor.execute(sql)
+      data = self.cursor.fetchall()
+
+      print('isCustomerExist data type : ', type(data), flush=True)
+      print('data : ', str(data), flush=True)
+
+      if len(data) > 0:
+         return data, True
+      else:
+         return data, False
 
 @app.route('/')
 def index():
@@ -427,11 +462,46 @@ def manager_add_dish():
 
 
    return render_template('manager_add_dish.html', data= data)
-
-
 def allowed_file(filename):
    return '.' in filename and \
           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+@app.route('/Manager/Add/Product', methods = ['POST', 'GET'])
+def manager_add_product():
+   db = DatabaseByPyMySQL()
+
+   if request.method == 'POST':
+      # check if the post request has the file part
+      if 'dishPic' not in request.files:
+         flash('No file part')
+         return redirect(request.url)
+      file = request.files['dishPic']
+      # if user does not select file, browser also
+      # submit an empty part without filename
+      if file.filename == '':
+         flash('No selected file')
+         return redirect(request.url)
+
+      if file and allowed_file(file.filename):
+         filename = secure_filename(file.filename)
+         filename = str(current_milli_time())+filename[-4:]
+         file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+
+         DishName = request.form['DishName']
+         DishDes = request.form['DishDes']
+         DishPrice = request.form['DishPrice']
+         isAvailable = request.form['isAvailable']
+         DishMenu = request.form['DishMenu']
+
+         db = DatabaseByPyMySQL()
+         status = db.addDish(dishName=DishName, dishDes=DishDes, dishPrice=DishPrice, dishPic=filename, isAvailable=isAvailable, menu_id=DishMenu)
+
+         print(str(status), flush=True)
+         return render_template('manager_add_product.html', msg = str(status))
+
+
+   return render_template('manager_add_product.html')
+
 
 @app.route('/Manager/Add/Table', methods=['POST', 'GET'])
 def manager_add_table():
@@ -533,7 +603,14 @@ def search():
 
 @app.route('/Sales/Invoice')
 def sales_invoice():
-   return render_template('salesman_invoice.html')
+   db = DatabaseByPyMySQL()
+   RecentOrders, notEmpty = db.getRangeOrdersDetails(page=0, range=50)
+
+   data = {
+      'RecentOrders': RecentOrders
+   }
+
+   return render_template('salesman_invoice.html', data = data)
 
 
 @app.route('/Manager/Add/Employee')
@@ -559,20 +636,12 @@ def manager_add_emp_form():
          return render_template('manager_add_emp.html', msg='user_exist')
       else:
          print(" USER IS NEW ", flush=True)
-         feedback = db.addNewEmployee(name=EmployeeName, email=EmployeeEmail, address=EmployeeAddress, phone=EmployeePhoneNumber, passwd=EmployeePass)
+         feedback = db.addNewUser(name=EmployeeName, email=EmployeeEmail, address=EmployeeAddress, phone=EmployeePhoneNumber, passwd=EmployeePass, userType='EMP')
 
          if feedback:
             return render_template('manager_add_emp.html', msg='success')
          else:
             return render_template('manager_add_emp.html', msg='failed')
-
-
-
-
-
-
-
-
 
 
 
