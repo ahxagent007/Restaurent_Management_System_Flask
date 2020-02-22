@@ -22,6 +22,10 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 # Lambda Function
 current_milli_time = lambda: int(round(time.time() * 1000))
 
+class kitchenOrder:
+    def __init__(self, OrderDetails, DishList):
+        self.OrderDetails = OrderDetails
+        self.DishList = DishList
 
 class DatabaseByPyMySQL:
     def __init__(self):
@@ -399,6 +403,40 @@ class DatabaseByPyMySQL:
             print('Error = ', str(sys.exc_info()[0]), flush=True)
             return False
 
+    def getDishesByOrderId(self, order_id):
+
+        sql = 'SELECT * FROM dish JOIN ordered_dishes ON ordered_dishes.dish_id = dish.dish_id WHERE ordered_dishes.order_id = {0}'.format(order_id)
+        self.cursor.execute(sql)
+        data = self.cursor.fetchall()
+
+        #print('getDishesByOrderId data type : ', type(data), flush=True)
+        #print('data : ', str(data), flush=True)
+
+        if len(data) > 0:
+            return data, True
+        else:
+            return data, False
+
+    def getRangeKitchenOrders(self, page, range):
+        fromm = page * range;
+
+        sql_all = 'SELECT * FROM flask_db.order ORDER BY flask_db.order.order_id DESC LIMIT {0}, {1};'.format(fromm, range)
+        self.cursor.execute(sql_all)
+        data = self.cursor.fetchall()
+
+        allData = []
+
+        for d in data:
+            #print(d['order_id'], flush=True)
+            allData.append(kitchenOrder(d,self.getDishesByOrderId(d['order_id'])))
+
+        print('getRangeKitchenOrders allData type : ', type(allData), flush=True)
+        print('allData : ', str(allData), flush=True)
+
+        if len(allData) > 0:
+            return allData, True
+        else:
+            return allData, False
 
 @app.route('/')
 def index():
@@ -746,6 +784,22 @@ def manager_add_emp_form():
                 return render_template('manager_add_emp.html', msg='success')
             else:
                 return render_template('manager_add_emp.html', msg='failed')
+
+
+@app.route('/Kitchen', methods=['GET'])
+def kitchen():
+    db = DatabaseByPyMySQL()
+    kitchenOrders = db.getRangeKitchenOrders(0,10)
+
+    print(str(kitchenOrders[0]), flush=True)
+
+    for k in kitchenOrders:
+
+        for i in k.DishList:
+            print(k.OrderDetails+' '+i, flush=True)
+
+    #return render_template('kitchen.html', data = kitchenOrder)
+    return render_template('empty.html')
 
 
 app.debug = True
