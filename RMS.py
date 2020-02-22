@@ -428,7 +428,9 @@ class DatabaseByPyMySQL:
 
         for d in data:
             #print(d['order_id'], flush=True)
-            allData.append(kitchenOrder(d,self.getDishesByOrderId(d['order_id'])))
+
+            de, f = self.getDishesByOrderId(d['order_id'])
+            allData.append(kitchenOrder(d,de))
 
         print('getRangeKitchenOrders allData type : ', type(allData), flush=True)
         print('allData : ', str(allData), flush=True)
@@ -440,8 +442,7 @@ class DatabaseByPyMySQL:
 
 @app.route('/')
 def index():
-    return 'INDEX'
-
+    return render_template('dummy_index.html')
 
 @app.route('/Manager')
 def manager_dashboard():
@@ -789,18 +790,21 @@ def manager_add_emp_form():
 @app.route('/Kitchen', methods=['GET'])
 def kitchen():
     db = DatabaseByPyMySQL()
-    kitchenOrders = db.getRangeKitchenOrders(0,10)
-
-    print(str(kitchenOrders[0]), flush=True)
+    kitchenOrders, isbool = db.getRangeKitchenOrders(0,10)
 
     for k in kitchenOrders:
+        print('k.OrderDetails', flush=True)
+        print(k.OrderDetails, flush=True)
+        for d in k.DishList:
+            print('k.DishList', flush=True)
+            print(d, flush=True)
 
-        for i in k.DishList:
-            print(k.OrderDetails+' '+i, flush=True)
 
-    #return render_template('kitchen.html', data = kitchenOrder)
-    return render_template('empty.html')
+    return render_template('kitchen.html', data = kitchenOrders)
 
+@app.route('/Login')
+def login():
+    return render_template('login.html')
 
 app.debug = True
 app.run()
