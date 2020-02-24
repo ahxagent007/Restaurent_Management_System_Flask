@@ -1,0 +1,109 @@
+{% extends 'base_manager.html' %}
+
+{% block title %}
+    <title>RMS - Manager</title>
+{% endblock %}
+
+{% block page_header %}
+
+    <h2 class="pageheader-title">Manager Dashboard</h2>
+
+    <div class="page-breadcrumb">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item" aria-current="page"><a href="{{ url_for('manager_dashboard')}}" class="breadcrumb-link">Add Dish</a></li>
+            </ol>
+        </nav>
+    </div>
+
+{% endblock %}
+
+{% block content %}
+
+    {% if msg == 'True'  %}
+        <div class="card-body border-top">
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                <strong>Sucess!</strong> Dish added.
+                <a href="#" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </a>
+            </div>
+        </div>
+    {% elif msg == 'False' %}
+            <div class="card-body border-top">
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <strong>Something went wrong!</strong> Try Aganin!!!
+                    <a href="#" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </a>
+                </div>
+            </div>
+
+    {% endif %}
+
+    <row>
+        <div class="col-xl-12 col-lg-6 col-md-12 col-sm-12 col-12">
+            <div class="card">
+                <h5 class="card-header">Add Dish</h5>
+                <div class="card-body">
+                    <form action="{{url_for('manager_add_dish')}}" id="basicform" data-parsley-validate="" method="post" enctype=multipart/form-data>
+                        <div class="form-group">
+                            <label for="DishName">Dish Name</label>
+                            <input id="DishName" type="text" name="DishName" data-parsley-trigger="change" required="" placeholder="Enter dish name" autocomplete="off" class="form-control">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="DishDes">Dish Desciption</label>
+                            <input id="DishDes" type="text" name="DishDes" data-parsley-trigger="change" required="" placeholder="Enter dish Desciption" autocomplete="off" class="form-control">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="DishPrice" class="col-form-label">Price</label>
+                            <input id="DishPrice" type="number" class="form-control" placeholder="Price" name="DishPrice">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="DishMenu">Choose Menu:</label>
+
+                            <select id="DishMenu" name="DishMenu" class="form-control">
+                                {% for menu in data['menu'] %}
+                              <option value="{{menu['menu_id']}}">{{menu['menu_name']}}</option>
+                                {% endfor %}
+                            </select>
+
+                        </div>
+
+                        <div class="custom-file mb-3">
+                            <input type="file" class="custom-file-input" id="dishPic" name="dishPic">
+                            <label class="custom-file-label" for="dishPic">Add Picture</label>
+                        </div>
+
+                        <div class="form-group">
+                            <label >Availibility of a Dish</label>
+                            <div class="custom-control custom-radio">
+                                <input type="radio" class="custom-control-input is-valid" id="customControlValidation3" name="isAvailable" required value="Available">
+                                <label class="custom-control-label" for="customControlValidation3">Available</label>
+                            </div>
+                            <div class="custom-control custom-radio">
+                                <input type="radio" class="custom-control-input is-invalid" id="customControlValidation4" name="isAvailable" required value="Unavailable">
+                                <label class="custom-control-label" for="customControlValidation4">Unavailable</label>
+                            </div>
+                        </div>
+
+
+                        <div class="row">
+                            <div class="col-sm-6 pl-0">
+                                <p class="text-right">
+                                    <button type="submit" class="btn btn-space btn-primary">Submit</button>
+                                    <button class="btn btn-space btn-secondary">Cancel</button>
+                                </p>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </row>
+
+{% endblock %}
+

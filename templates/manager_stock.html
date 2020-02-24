@@ -1,0 +1,95 @@
+{% extends 'base_manager.html' %}
+
+{% block title %}
+    <title>RMS - Manager</title>
+{% endblock %}
+
+{% block page_header %}
+
+    <h2 class="pageheader-title">Manager Dashboard</h2>
+
+    <div class="page-breadcrumb">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item" aria-current="page"><a href="{{ url_for('manager_dashboard')}}" class="breadcrumb-link">Stock</a></li>
+            </ol>
+        </nav>
+    </div>
+
+{% endblock %}
+
+
+
+{% block content %}
+
+    <div class="row">
+                            <!-- ============================================================== -->
+
+                            <!-- ============================================================== -->
+
+                                          <!-- Stock  -->
+                            <!-- ============================================================== -->
+                            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+                                <div class="card">
+                                    <h5 class="card-header">Stock</h5>
+                                    <div class="card-body p-0">
+                                        <div class="table-responsive">
+                                            <table class="table">
+                                                <thead class="bg-light">
+                                                    <tr class="border-0">
+                                                        <th class="border-0">ID</th>
+                                                        <th class="border-0">Image</th>
+                                                        <th class="border-0">Name</th>
+                                                        <th class="border-0">Quantity</th>
+                                                        <th class="border-0">Catagory</th>
+                                                        <th class="border-0">description</th>
+                                                        <th class="border-0">Status</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                {% for product in data['stock']%}
+                                                    <tr>
+                                                        <td>{{product['product_id']}}</td>
+                                                        <td>
+                                                            <div class="m-r-10"><img src="../static/UPLOADS/{{product['product_pic']}}" alt="{{product['product_id']}}" class="rounded" width="45"></div>
+                                                        </td>
+                                                        <td>{{product['product_name']}}</td>
+
+                                                        <td>{{product['product_quantity']}}</td>
+                                                        <td>{{product['product_cat']}}</td>
+                                                        <td>{{product['product_des']}}</td>
+
+                                                        {% if product['product_quantity'] >= 10 %}
+                                                        <td><span class="badge-dot badge-success mr-1"></span>In-Stock</td>
+                                                        {% elif product['product_quantity'] <= 0 %}
+                                                        <td><span class="badge-dot badge-danger mr-1"></span>Stock-Out</td>
+                                                        {% elif product['product_quantity'] < 10 %}
+                                                        <td><span class="badge-dot badge-warning mr-1"></span>Out-Soon</td>
+
+                                                        {% endif %}
+                                                    </tr>
+
+                                                {% endfor %}
+
+
+
+                                                    <tr>
+                                                        <td colspan="9"><a href="#" class="btn btn-outline-light float-right">View All</a></td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- ============================================================== -->
+                            <!-- Stock  -->
+
+
+                            <!-- ============================================================== -->
+                            <!-- ============================================================== -->
+                            <!-- ============================================================== -->
+                        </div>
+
+{% endblock %}
+

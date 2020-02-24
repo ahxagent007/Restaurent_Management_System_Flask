@@ -1,0 +1,85 @@
+{% extends 'base_manager.html' %}
+
+{% block title %}
+    <title>RMS - Manager</title>
+{% endblock %}
+
+{% block page_header %}
+
+    <h2 class="pageheader-title">Manager Dashboard</h2>
+
+    <div class="page-breadcrumb">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item" aria-current="page"><a href="{{ url_for('manager_dashboard')}}" class="breadcrumb-link">Add Offer</a></li>
+            </ol>
+        </nav>
+    </div>
+
+{% endblock %}
+
+{% block content %}
+        {% if msg == 'success'  %}
+            <div class="card-body border-top">
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    <strong>Sucess!</strong> Offer added.
+                    <a href="#" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </a>
+                </div>
+            </div>
+        {% elif msg == 'failed' %}
+                <div class="card-body border-top">
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <strong>Something went wrong!</strong> Try Aganin!!!
+                        <a href="#" class="close" data-dismiss="alert" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </a>
+                    </div>
+                </div>
+
+        {% endif %}
+
+    <row>
+        <div class="col-xl-12 col-lg-6 col-md-12 col-sm-12 col-12">
+            <div class="card">
+                <h5 class="card-header">Add Offer</h5>
+                <div class="card-body">
+                    <form action="{{url_for('manager_add_offers')}}" id="basicformq" data-parsley-validate="" method="post">
+                        <div class="form-group">
+                            <label for="OfferName">Offer Name</label>
+                            <input id="OfferName" type="text" name="OfferName" data-parsley-trigger="change" required="" placeholder="Enter Offer name" autocomplete="off" class="form-control">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="OfferDis" class="col-form-label">Discount (%)</label>
+                            <input id="OfferDis" type="number" class="form-control" placeholder="%" name="OfferDis">
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-form-label">From : </label>
+                            <input type="date" name="Offer_from" class="form-control">
+                        </div>
+
+                         <div class="form-group">
+                            <label class="col-form-label">To : </label>
+                            <input type="date" name="Offer_to" class="form-control">
+                        </div>
+
+
+                        <div class="row">
+                            <div class="col-sm-6 pl-0">
+                                <p class="text-right">
+                                    <button type="submit" class="btn btn-space btn-primary">Submit</button>
+                                    <button class="btn btn-space btn-secondary">Cancel</button>
+                                </p>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </row>
+
+{% endblock %}
+

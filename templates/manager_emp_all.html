@@ -1,0 +1,79 @@
+{% extends 'base_manager.html' %}
+
+{% block title %}
+    <title>RMS - Manager</title>
+{% endblock %}
+
+{% block page_header %}
+
+    <h2 class="pageheader-title">Manager Dashboard</h2>
+    <p class="pageheader-text">Nulla euismod urna eros, sit amet scelerisque torton lectus vel mauris facilisis faucibus at enim quis massa lobortis rutrum.</p>
+
+    <div class="page-breadcrumb">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item" aria-current="page"><a href="{{ url_for('manager_dashboard')}}" class="breadcrumb-link">All Employee</a></li>
+            </ol>
+        </nav>
+    </div>
+
+{% endblock %}
+
+
+{% block content %}
+
+    <div class="row">
+                            <!-- ============================================================== -->
+
+                            <!-- ============================================================== -->
+                            <!-- Stock  -->
+                            <!-- ============================================================== -->
+                            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+                                <div class="card">
+                                    <h5 class="card-header">Employee List</h5>
+                                    <div class="card-body p-0">
+                                        <div class="table-responsive">
+                                            <table class="table">
+                                                <thead class="bg-light">
+                                                    <tr class="border-0">
+                                                        <th class="border-0">Emp. ID</th>
+                                                        <th class="border-0">Name</th>
+                                                        <th class="border-0">Phone</th>
+                                                        <th class="border-0">Email</th>
+                                                        <th class="border-0">Address</th>
+                                                        <th class="border-0">Status</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+
+                                                {% for emp in data['AllEmp'] %}
+
+                                                    <tr>
+                                                        <td>{{emp['user_id']}}</td>
+                                                        <td>{{emp['name']}}</td>
+                                                        <td>{{emp['phone_no']}}</td>
+                                                        <td>{{emp['email']}}</td>
+                                                        <td>{{emp['address']}}</td>
+                                                        <td><span class="badge-dot badge-warning mr-1"></span>N/A</td>
+                                                    </tr>
+                                                {% endfor %}
+
+                                                    <tr>
+                                                        <td colspan="9"><a href="#" class="btn btn-outline-light float-right">View All</a></td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- ============================================================== -->
+                            <!-- Stock  -->
+
+
+                            <!-- ============================================================== -->
+                            <!-- ============================================================== -->
+                            <!-- ============================================================== -->
+                        </div>
+
+{% endblock %}
