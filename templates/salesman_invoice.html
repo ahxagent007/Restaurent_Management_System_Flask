@@ -1,0 +1,71 @@
+
+{% extends 'base_salesman.html' %}
+
+{% block title %}
+    <title>RMS - Sales</title>
+{% endblock %}
+
+{% block page_header %}
+
+    <h2 class="pageheader-title">Invoce</h2>
+
+    <div class="page-breadcrumb">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item" aria-current="page"><a href="" class="breadcrumb-link">Invoice</a></li>
+            </ol>
+        </nav>
+    </div>
+
+{% endblock %}
+
+
+{% block content %}
+    <row>
+       <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+                            <div class="card">
+                                <h5 class="card-header">Invoice List</h5>
+                                <div class="card-body">
+                                    <div class="table-responsive">
+                                        <table class="table table table-hover">
+                                            <thead>
+                                                <tr>
+                                                    <th>#</th>
+                                                    <th>Invoice no.</th>
+                                                    <th>Name</th>
+                                                    <th>Date</th>
+                                                    <th>Total Bill</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                            {% for order in data['RecentOrders'] %}
+
+                                                <tr>
+                                                    <td>#</td>
+                                                    <td>00000{{order['order_id']}}</td>
+                                                    <td>{{order['name']}}</td>
+                                                    <td>{{order['order_date']}}</td>
+                                                    <td>{{order['total_bill']}}</td>
+                                                </tr>
+                                            {% endfor %}
+
+                                            </tbody>
+                                            <tfoot>
+                                                <tr>
+                                                    <th>#</th>
+                                                    <th>Invoice no.</th>
+                                                    <th>Name</th>
+                                                    <th>Date</th>
+                                                    <th>Total Bill</th>
+                                                </tr>
+                                            </tfoot>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+    </row>
+
+{% endblock %}
+
+

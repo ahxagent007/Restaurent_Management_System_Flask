@@ -1,0 +1,275 @@
+<!doctype html>
+<html lang="en">
+
+    <head>
+        <!-- Required meta tags -->
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <!-- Bootstrap CSS -->
+        <link rel="stylesheet" href="{{url_for('static', filename='vendor/bootstrap/css/bootstrap.min.css')}}">
+        <link rel="stylesheet" href="{{url_for('static', filename='vendor/fonts/circular-std/style.css')}}" >
+        <link rel="stylesheet" href="{{url_for('static', filename='libs/css/style.css')}}">
+        <link rel="stylesheet" href="{{url_for('static', filename='vendor/fonts/fontawesome/css/fontawesome-all.css')}}">
+        <link rel="stylesheet" href="{{url_for('static', filename='vendor/charts/chartist-bundle/chartist.css')}}">
+        <link rel="stylesheet" href="{{url_for('static', filename='vendor/charts/morris-bundle/morris.css')}}">
+        <link rel="stylesheet" href="{{url_for('static', filename='vendor/fonts/material-design-iconic-font/css/materialdesignicons.min.css')}}">
+        <link rel="stylesheet" href="{{url_for('static', filename='vendor/charts/c3charts/c3.css')}}">
+        <link rel="stylesheet" href="{{url_for('static', filename='vendor/fonts/flag-icon-css/flag-icon.min.css')}}">
+
+
+        <title>RMS</title>
+
+
+    </head>
+
+    <body>
+        <!-- ============================================================== -->
+        <!-- main wrapper -->
+        <!-- ============================================================== -->
+        <div class="dashboard-main-wrapper">
+            <!-- ============================================================== -->
+            <!-- navbar -->
+            <!-- ============================================================== -->
+            <div class="dashboard-header">
+                <nav class="navbar navbar-expand-lg bg-white fixed-top">
+                    <a class="navbar-brand" href="/">Welcome to RMS ( Restaurant Management System)</a>
+                    
+                </nav>
+            </div>
+            <!-- ============================================================== -->
+            <!-- end navbar -->
+            <!-- ============================================================== -->
+
+            <!-- ============================================================== -->
+            <!-- wrapper  -->
+            <!-- ============================================================== -->
+            <div >
+
+                <div class="dashboard-ecommerce">
+                    <div class="container-fluid dashboard-content ">
+                        <!-- ============================================================== -->
+                        <!-- pageheader  -->
+                        <!-- ============================================================== -->
+                        <div class="row">
+                            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+                                <div class="page-header">
+                                    <h2 class="pageheader-title">RMS Navigation Dashboard</h2>
+
+                                    <div class="page-breadcrumb">
+                                        <nav aria-label="breadcrumb">
+                                            <ol class="breadcrumb">
+                                                <li class="breadcrumb-item" aria-current="page">Developed by <a href="secretdevbd.com" target="_blank" class="breadcrumb-link">Secret Developers</a></li>
+                                            </ol>
+                                        </nav>
+                                    </div>
+
+
+                                </div>
+                            </div>
+                        </div>
+                        <!-- ============================================================== -->
+                        <!-- end pageheader  -->
+                        <!-- ============================================================== -->
+                        <div class="ecommerce-widget">
+                              <div class="row">
+
+
+                                <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 col-12">
+                                    <!-- ============================================================== -->
+                                    <!-- overview -->
+                                    <!-- ============================================================== -->
+                                    <div class="page-section" id="overview">
+                                        <div class="row">
+                                            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+                                                <h2>Overview</h2>
+                                                    <p class="lead">Welcome to The Restaurant Management System (RMS), a final destination for your food business. An intuitive system to manage your restaurant from store to kitchen, bill management to customer care! Do you need more? Good news for you. In our RMS you will get lots of extra features out-of-the-box. In addition our plug-ins will make your job easier than ever if you need something unique. Your imagination is the only limitation. 
+                                                    By using this system you will attain total command on your business, consequently more profit will pile up. So, what are you waiting for?</p>
+                                                <ul class="list-unstyled arrow">
+                                                    <li>Customer Management</li>
+                                                    <li>Restaurant Stock Management</li>
+                                                    <li>Order Management</li>
+                                                    <li>Customer Online Orders</li>
+                                                    <li>Live Orders view from kitchen</li>
+                                                    <li>Live Search system</li>
+                                                    <li>Clean UI</li>
+                                                    <li>Login System (Disable Now)</li>
+                                                    <li>POS Integration (Future)</li>
+                                                    <li>Live Employee Status - Attendance Hardware(Future)</li>
+                                                    <li>A-Z log history (Future)</li>
+
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- ============================================================== -->
+                                    <!-- end overview -->
+                                    <!-- ============================================================== -->
+                                </div>
+
+                                    <!-- accrodions style four -->
+                                    <!-- ============================================================== -->
+                                    <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 col-12">
+                                        <div class="section-block">
+                                            <h5 class="section-title">Navigate through our system</h5>
+                                            <p>Some of the UI element might be show as dummy data. It will be turned on on the actual implemented System.</p>
+                                            <p>Also we have disable the Login System so that it is easy to suuf through all the features of our system.</p>
+                                        </div>
+                                        <div class="accrodion-regular">
+                                            <div id="accordion4">
+
+                                                <div class="card bg-primary">
+                                                    <div class="card-header" id="headingTen">
+                                                        <h5 class="mb-0">
+                                                           <button class="btn btn-link text-white" data-toggle="collapse" data-target="#collapseTen" aria-expanded="false" aria-controls="collapseTen">
+                                                             <span class="fas fa-angle-down mr-3"></span>Manager
+                                                           </button>
+                                                          </h5>
+                                                    </div>
+                                                    <div id="collapseTen" class="collapse" aria-labelledby="headingTen" data-parent="#accordion4">
+                                                        <div class="card-body">
+                                                            <p>In the manager section, One manager can add Employee, Dish, Menu, Product, Table. manager can see stock, Sales, Orders details. Can read message from employees.
+                                                                Can see all Employee (All/on Work). Message system is disable right at this moment. it will be implemented as a chatting system.</p>
+                                                            <a href="{{url_for('manager_dashboard')}}" class="btn btn-secondary">Explore</a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="card bg-brand ">
+                                                    <div class="card-header" id="headingEleven">
+                                                        <h5 class="mb-0">
+                                                           <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapseEleven" aria-expanded="false" aria-controls="collapseEleven">
+                                                             <span class="fas fa-angle-down mr-3"></span>Salesman
+                                                         </button>       </h5>
+                                                    </div>
+                                                    <div id="collapseEleven" class="collapse" aria-labelledby="headingEleven" data-parent="#accordion4">
+                                                        <div class="card-body">
+                                                            <p>This section is the the employee who will take orders from the Customer. Salesman have to input customers details. System will automatically catch if the customer is unique or not.
+                                                                If the customer is unique he/she will get a new account opened. otherwise if that customer has visited the restaurant before his/her order will be added to his past account.
+                                                            Employee can edit the stock of restaurant needed product and by that a manager will know which product is in need of that restaurant.</p>
+                                                            <a href="{{url_for('sales_dashboard')}}" class="btn btn-dark">Explore</a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="card bg-secondary">
+                                                    <div class="card-header" id="headingTwelve">
+                                                        <h5 class="mb-0">
+                                                        <button class="btn btn-link collapsed text-white" data-toggle="collapse" data-target="#collapseTwelve" aria-expanded="false" aria-controls="collapseTwelve">
+                                                              <span class="fas fa-angle-down mr-3"></span>Kitchen
+                                                         </button>
+                                                                   </h5>
+                                                    </div>
+                                                    <div id="collapseTwelve" class="collapse" aria-labelledby="headingTwelve" data-parent="#accordion4">
+                                                        <div class="card-body">
+                                                            <p>This section should be opend at the kitchen area on any display. This section will show live orders list so that a chef can ready the order and serve it to the customer.</p>
+                                                            <a href="{{url_for('kitchen')}}" class="btn btn-primary">Explore</a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+
+
+                                                <div class="card bg-success">
+                                                    <div class="card-header" id="headingThirteen">
+                                                        <h5 class="mb-0">
+                                                           <button class="btn btn-link collapsed text-white" data-toggle="collapse" data-target="#collapseThirteen" aria-expanded="false" aria-controls="collapseThirteen">
+                                                             <span class="fas fa-angle-down mr-3"></span>Login
+                                                           </button>
+                                                          </h5>
+                                                    </div>
+                                                    <div id="collapseThirteen" class="collapse" aria-labelledby="headingThirteen" data-parent="#accordion4">
+                                                        <div class="card-body">
+                                                            <p>This is the login screen for our system. Login system is disable now.</p>
+                                                            <a href="{{url_for('login')}}" class="btn btn-info">Explore</a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- ============================================================== -->
+                                    <!-- end accrodions style four -->
+                                    <!-- ============================================================== -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- ============================================================== -->
+                <!-- footer -->
+                <!-- ============================================================== -->
+                <div class="footer">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12 col-12">
+                                 Copyright © 2020 || Developed by <a href="https://secretdevbd.com" target="_blank">Secret Developers</a>. Designed by <a href="https://colorlib.com/wp/" target="_blank">Colorlib</a>.
+                            </div>
+                            <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12 col-12">
+                                <!--<div class="text-md-right footer-links d-none d-sm-block">
+                                    <a href="javascript: void(0);">About</a>
+                                    <a href="javascript: void(0);">Support</a>
+                                    <a href="javascript: void(0);">Contact Us</a>
+                                </div>-->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- ============================================================== -->
+                <!-- end wrapper  -->
+                <!-- ============================================================== -->
+            </div>
+        </div>
+        <!-- ============================================================== -->
+        <!-- end main wrapper  -->
+        <!-- ============================================================== -->
+
+
+
+        <!-- Optional JavaScript -->
+        <!-- jquery 3.3.1 -->
+        <script type="text/javascript" src="{{ url_for('static', filename='vendor/jquery/jquery-3.3.1.min.js') }}"></script>
+        <!-- bootstap bundle js -->
+        <script type="text/javascript" src="{{ url_for('static', filename='vendor/bootstrap/js/bootstrap.bundle.js') }}"></script>
+        <!-- slimscroll js -->
+        <script type="text/javascript" src="{{ url_for('static', filename='vendor/slimscroll/jquery.slimscroll.js') }}"></script>
+        <!-- main js -->
+        <script type="text/javascript" src="{{ url_for('static', filename='libs/js/main-js.js') }}"></script>
+        <!-- chart chartist js -->
+        <script type="text/javascript" src="{{ url_for('static', filename='vendor/charts/chartist-bundle/chartist.min.js') }}"></script>
+        <!-- sparkline js -->
+        <script type="text/javascript" src="{{ url_for('static', filename='vendor/charts/sparkline/jquery.sparkline.js') }}"></script>
+        <!-- morris js -->
+        <script type="text/javascript" src="{{ url_for('static', filename='vendor/charts/morris-bundle/raphael.min.js') }}"></script>
+        <script type="text/javascript" src="{{ url_for('static', filename='vendor/charts/morris-bundle/morris.js') }}"></script>
+        <!-- chart c3 js -->
+        <script type="text/javascript" src="{{ url_for('static', filename='vendor/charts/c3charts/c3.min.js') }}"></script>
+        <script type="text/javascript" src="{{ url_for('static', filename='vendor/charts/c3charts/d3-5.4.0.min.js') }}"></script>
+        <script type="text/javascript" src="{{ url_for('static', filename='vendor/charts/c3charts/C3chartjs.js') }}"></script>
+        <script type="text/javascript" src="{{ url_for('static', filename='libs/js/dashboard-ecommerce.js') }}"></script>
+
+        <!-- custom JS -->
+
+    </body>
+
+</html> 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                       

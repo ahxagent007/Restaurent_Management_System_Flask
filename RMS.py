@@ -806,6 +806,22 @@ def kitchen():
 def login():
     return render_template('login.html')
 
+@app.route('/Login', methods=['POST'])
+def login_request():
+    if request.method == 'POST':
+        EmailOrPhone = request.form['emailOrPhone']
+        Password = request.form['pass']
+
+
+        print(EmailOrPhone+' '+Password, flush=True)
+
+
+        db = DatabaseByPyMySQL()
+
+
+
+
+
 app.debug = True
 app.run()
 app.run(debug=True)
