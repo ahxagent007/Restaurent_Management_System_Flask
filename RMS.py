@@ -485,72 +485,104 @@ def index():
 
 @app.route('/Manager')
 def manager_dashboard():
-    db = DatabaseByPyMySQL()
-    RecentOrders, notEmpty = db.getRangeOrdersDetails(page=0, range=20)
+    if session.get('id') is not None and session.get('type') == 'MNG':
+        db = DatabaseByPyMySQL()
+        RecentOrders, notEmpty = db.getRangeOrdersDetails(page=0, range=20)
 
-    data = {
-        'RecentOrders': RecentOrders
-    }
+        data = {
+            'RecentOrders': RecentOrders
+        }
 
-    return render_template('manager.html', data=data)
+        return render_template('manager.html', data=data)
+
+    else:
+        return redirect(url_for('login'))
+
 
 
 @app.route('/Manager/Sales')
 def manager_sales():
-    db = DatabaseByPyMySQL()
-    RecentOrders, notEmpty = db.getRangeOrdersDetails(page=0, range=20)
+    if session.get('id') is not None and session.get('type') == 'MNG':
+        db = DatabaseByPyMySQL()
+        RecentOrders, notEmpty = db.getRangeOrdersDetails(page=0, range=20)
 
-    data = {
-        'RecentOrders': RecentOrders
-    }
+        data = {
+            'RecentOrders': RecentOrders
+        }
 
-    return render_template('manager_sales.html', data=data)
+        return render_template('manager_sales.html', data=data)
+
+
+    else:
+        return redirect(url_for('login'))
 
 
 @app.route('/Manager/Stock')
 def manager_stock():
-    db = DatabaseByPyMySQL()
-    allStock, isbool = db.getAllStock();
+    if session.get('id') is not None and session.get('type') == 'MNG':
+        db = DatabaseByPyMySQL()
+        allStock, isbool = db.getAllStock();
 
-    data = {
-        'stock': allStock
-    }
+        data = {
+            'stock': allStock
+        }
 
-    return render_template('manager_stock.html', data=data)
+        return render_template('manager_stock.html', data=data)
+
+    else:
+        return redirect(url_for('login'))
+
 
 
 @app.route('/Manager/EmpAll')
 def manager_emp_all():
-    db = DatabaseByPyMySQL()
+    if session.get('id') is not None and session.get('type') == 'MNG':
+        db = DatabaseByPyMySQL()
 
-    AllEmployee, notEmpty = db.getAllEmployee()
+        AllEmployee, notEmpty = db.getAllEmployee()
 
-    data = {
-        'AllEmp': AllEmployee
-    }
+        data = {
+            'AllEmp': AllEmployee
+        }
 
-    return render_template('manager_emp_all.html', data=data)
+        return render_template('manager_emp_all.html', data=data)
+
+    else:
+        return redirect(url_for('login'))
+
 
 
 @app.route('/Manager/EmpWork')
 def manager_emp_work():
-    return "not Found!!"
+    if session.get('id') is not None and session.get('type') == 'MNG':
+        return "not Found!!"
+    else:
+        return redirect(url_for('login'))
 
 
 @app.route('/Manager/Message')
 def manager_msg():
-    db = DatabaseByPyMySQL()
-    all_msg, isEmpty = db.getAllMsg(uid=1, page=0, range=10)
-    data = {
-        'msg': all_msg
-    }
-    return render_template('manager_msg.html', data=data)
+    if session.get('id') is not None and session.get('type') == 'MNG':
+        db = DatabaseByPyMySQL()
+        all_msg, isEmpty = db.getAllMsg(uid=1, page=0, range=10)
+        data = {
+            'msg': all_msg
+        }
+        return render_template('manager_msg.html', data=data)
+
+    else:
+        return redirect(url_for('login'))
+
+
 
 
 @app.route('/Manager/Add/Menu')
 def manager_add_menu():
-    return render_template('manager_add_menu.html')
+    if session.get('id') is not None and session.get('type') == 'MNG':
+        return render_template('manager_add_menu.html')
 
+    else:
+        return redirect(url_for('login'))
 
 @app.route('/Manager/Add/MenuForm', methods=['POST'])
 def manager_add_menu_form():
@@ -572,42 +604,46 @@ def manager_add_menu_form():
 
 @app.route('/Manager/Add/Dish', methods=['POST', 'GET'])
 def manager_add_dish():
-    db = DatabaseByPyMySQL()
-    menu, booll = db.getAllMenu()
-    data = {
-        'menu': menu
-    }
-    if request.method == 'POST':
-        # check if the post request has the file part
-        if 'dishPic' not in request.files:
-            flash('No file part')
-            return redirect(request.url)
-        file = request.files['dishPic']
-        # if user does not select file, browser also
-        # submit an empty part without filename
-        if file.filename == '':
-            flash('No selected file')
-            return redirect(request.url)
+    if session.get('id') is not None and session.get('type') == 'MNG':
+        db = DatabaseByPyMySQL()
+        menu, booll = db.getAllMenu()
+        data = {
+            'menu': menu
+        }
+        if request.method == 'POST':
+            # check if the post request has the file part
+            if 'dishPic' not in request.files:
+                flash('No file part')
+                return redirect(request.url)
+            file = request.files['dishPic']
+            # if user does not select file, browser also
+            # submit an empty part without filename
+            if file.filename == '':
+                flash('No selected file')
+                return redirect(request.url)
 
-        if file and allowed_file(file.filename):
-            filename = secure_filename(file.filename)
-            filename = str(current_milli_time()) + filename[-4:]
-            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+            if file and allowed_file(file.filename):
+                filename = secure_filename(file.filename)
+                filename = str(current_milli_time()) + filename[-4:]
+                file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
 
-            DishName = request.form['DishName']
-            DishDes = request.form['DishDes']
-            DishPrice = request.form['DishPrice']
-            isAvailable = request.form['isAvailable']
-            DishMenu = request.form['DishMenu']
+                DishName = request.form['DishName']
+                DishDes = request.form['DishDes']
+                DishPrice = request.form['DishPrice']
+                isAvailable = request.form['isAvailable']
+                DishMenu = request.form['DishMenu']
 
-            db = DatabaseByPyMySQL()
-            status = db.addDish(dishName=DishName, dishDes=DishDes, dishPrice=DishPrice, dishPic=filename,
-                                isAvailable=isAvailable, menu_id=DishMenu)
+                db = DatabaseByPyMySQL()
+                status = db.addDish(dishName=DishName, dishDes=DishDes, dishPrice=DishPrice, dishPic=filename,
+                                    isAvailable=isAvailable, menu_id=DishMenu)
 
-            print(str(status), flush=True)
-            return render_template('manager_add_dish.html', msg=str(status), data=data)
+                print(str(status), flush=True)
+                return render_template('manager_add_dish.html', msg=str(status), data=data)
 
-    return render_template('manager_add_dish.html', data=data)
+        return render_template('manager_add_dish.html', data=data)
+
+    else:
+        return redirect(url_for('login'))
 
 
 def allowed_file(filename):
@@ -617,93 +653,148 @@ def allowed_file(filename):
 
 @app.route('/Manager/Add/Product', methods=['POST', 'GET'])
 def manager_add_product():
-    db = DatabaseByPyMySQL()
+    if session.get('id') is not None and session.get('type') == 'MNG':
+        if request.method == 'POST':
+            # check if the post request has the file part
+            if 'ProductPic' not in request.files:
+                flash('No file part')
+                return redirect(request.url)
+            file = request.files['ProductPic']
+            # if user does not select file, browser also
+            # submit an empty part without filename
+            if file.filename == '':
+                flash('No selected file')
+                return redirect(request.url)
 
-    if request.method == 'POST':
-        # check if the post request has the file part
-        if 'ProductPic' not in request.files:
-            flash('No file part')
-            return redirect(request.url)
-        file = request.files['ProductPic']
-        # if user does not select file, browser also
-        # submit an empty part without filename
-        if file.filename == '':
-            flash('No selected file')
-            return redirect(request.url)
+            if file and allowed_file(file.filename):
+                filename = secure_filename(file.filename)
+                filename = str(current_milli_time()) + filename[-4:]
+                file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
 
-        if file and allowed_file(file.filename):
-            filename = secure_filename(file.filename)
-            filename = str(current_milli_time()) + filename[-4:]
-            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+                ProductName = request.form['ProductName']
+                ProductDes = request.form['ProductDes']
+                ProductQuantity = request.form['ProductQuantity']
+                ProductCategory = request.form['ProductCategory']
 
-            ProductName = request.form['ProductName']
-            ProductDes = request.form['ProductDes']
-            ProductQuantity = request.form['ProductQuantity']
-            ProductCategory = request.form['ProductCategory']
+                db = DatabaseByPyMySQL()
+                status = db.addProduct(productName=ProductName, productDes=ProductDes, productQuantity=ProductQuantity,
+                                       productCat=ProductCategory, productPic=filename)
 
-            db = DatabaseByPyMySQL()
-            status = db.addProduct(productName=ProductName, productDes=ProductDes, productQuantity=ProductQuantity,
-                                   productCat=ProductCategory, productPic=filename)
+                print(str(status), flush=True)
+                return render_template('manager_add_product.html', msg=str(status))
 
-            print(str(status), flush=True)
-            return render_template('manager_add_product.html', msg=str(status))
+        return render_template('manager_add_product.html')
 
-    return render_template('manager_add_product.html')
+    else:
+        return redirect(url_for('login'))
 
 
 @app.route('/Manager/Add/Table', methods=['POST', 'GET'])
 def manager_add_table():
-    if request.method == 'POST':
-        TableNo = request.form['TableNo']
-        Chair = request.form['NumberChair']
+    if session.get('id') is not None and session.get('type') == 'MNG':
+        if request.method == 'POST':
+            TableNo = request.form['TableNo']
+            Chair = request.form['NumberChair']
 
-        db = DatabaseByPyMySQL()
+            db = DatabaseByPyMySQL()
 
-        status = db.addTable(table_no=TableNo, chair=Chair, vacancy='YES')
+            status = db.addTable(table_no=TableNo, chair=Chair, vacancy='YES')
 
-        if (status):
-            return render_template('manager_add_table.html', msg='success')
-        else:
-            return render_template('manager_add_table.html', msg='failed')
+            if (status):
+                return render_template('manager_add_table.html', msg='success')
+            else:
+                return render_template('manager_add_table.html', msg='failed')
 
-    return render_template('manager_add_table.html')
+        return render_template('manager_add_table.html')
+
+    else:
+        return redirect(url_for('login'))
 
 
 @app.route('/Manager/Add/Offers', methods=['POST', 'GET'])
 def manager_add_offers():
+    if session.get('id') is not None and session.get('type') == 'MNG':
+        if request.method == 'POST':
+            OfferName = request.form['OfferName']
+            OfferDis = request.form['OfferDis']
+            Offer_from = request.form['Offer_from']
+            Offer_to = request.form['Offer_to']
+
+            db = DatabaseByPyMySQL()
+
+            status = db.addOffer(offerName=OfferName, discount=OfferDis, date_from=Offer_from, date_to=Offer_to)
+
+            if (status):
+                return render_template('manager_add_offers.html', msg='success')
+            else:
+                return render_template('manager_add_offers.html', msg='failed')
+
+        return render_template('manager_add_offers.html')
+
+
+    else:
+        return redirect(url_for('login'))
+
+
+@app.route('/Manager/Add/Employee')
+def manager_add_emp():
+    if session.get('id') is not None and session.get('type') == 'MNG':
+        return render_template('manager_add_emp.html')
+    else:
+        return redirect(url_for('login'))
+
+
+@app.route('/Manager/Add/EmployeeAdd', methods=['POST'])
+def manager_add_emp_form():
     if request.method == 'POST':
-        OfferName = request.form['OfferName']
-        OfferDis = request.form['OfferDis']
-        Offer_from = request.form['Offer_from']
-        Offer_to = request.form['Offer_to']
+        EmployeeName = request.form['EmployeeName']
+        EmployeePhoneNumber = request.form['EmployeePhoneNumber']
+        EmployeeAddress = request.form['EmployeeAddress']
+        EmployeeEmail = request.form['EmployeeEmail']
+        EmployeePass = request.form['EmployeePass01']
+
+        log = EmployeeName + " " + EmployeePhoneNumber + " " + EmployeeAddress + " " + EmployeeEmail + " " + EmployeePass
+        print(log, flush=True)
 
         db = DatabaseByPyMySQL()
 
-        status = db.addOffer(offerName=OfferName, discount=OfferDis, date_from=Offer_from, date_to=Offer_to)
-
-        if (status):
-            return render_template('manager_add_offers.html', msg='success')
+        if db.isEmailExist(EmployeeEmail):
+            print(" USER EXIST ", flush=True)
+            return render_template('manager_add_emp.html', msg='user_exist')
         else:
-            return render_template('manager_add_offers.html', msg='failed')
+            print(" USER IS NEW ", flush=True)
+            feedback = db.addNewUser(name=EmployeeName, email=EmployeeEmail, address=EmployeeAddress,
+                                     phone=EmployeePhoneNumber, passwd=EmployeePass, userType='EMP')
 
-    return render_template('manager_add_offers.html')
+            if feedback:
+                return render_template('manager_add_emp.html', msg='success')
+            else:
+                return render_template('manager_add_emp.html', msg='failed')
 
 
 @app.route('/Sales')
 def sales_dashboard():
-    db = DatabaseByPyMySQL()
-    RecentOrders, notEmpty = db.getRangeOrdersDetails(page=0, range=20)
+    if session.get('id') is not None and session.get('type') == 'EMP':
+        db = DatabaseByPyMySQL()
+        RecentOrders, notEmpty = db.getRangeOrdersDetails(page=0, range=20)
 
-    data = {
-        'RecentOrders': RecentOrders
-    }
+        data = {
+            'RecentOrders': RecentOrders
+        }
 
-    return render_template('salesman.html', data=data)
+        return render_template('salesman.html', data=data)
+
+    else:
+        return redirect(url_for('login'))
 
 
 @app.route('/Sales/Order', methods=['GET', 'POST'])
 def sales_order():
-    return render_template('salesman_order.html')
+    if session.get('id') is not None and session.get('type') == 'EMP':
+        return render_template('salesman_order.html')
+
+    else:
+        return redirect(url_for('login'))
 
 
 @app.route('/Sales/Order/LiveSearch', methods=['POST', 'GET'])
@@ -742,36 +833,40 @@ def order_Done():
 @app.route('/Sales/Stock', methods=['POST', 'GET'])
 def sales_stock():
 
-    state = ''
+    if session.get('id') is not None and session.get('type') == 'EMP':
+        state = ''
 
-    db = DatabaseByPyMySQL()
-    allStock, isbool = db.getAllStock();
+        db = DatabaseByPyMySQL()
+        allStock, isbool = db.getAllStock();
 
-    data = {
-        'stock': allStock
-    }
+        data = {
+            'stock': allStock
+        }
 
-    if request.method == 'POST':
-        id = request.form['updateBTN']
-        q = request.form['input' + id]
+        if request.method == 'POST':
+            id = request.form['updateBTN']
+            q = request.form['input' + id]
 
-        print('id ' + id + ' Q ' + str(q), flush=True)
+            print('id ' + id + ' Q ' + str(q), flush=True)
 
-        state = db.updateProductQunatity(new_quan=q, p_id=id)
+            state = db.updateProductQunatity(new_quan=q, p_id=id)
 
-        if state:
-            allStock, isbool = db.getAllStock();
+            if state:
+                allStock, isbool = db.getAllStock();
 
-            data = {
-                'stock': allStock
-            }
+                data = {
+                    'stock': allStock
+                }
 
+        return render_template('salesman_stock.html', data=data, msg=str(state))
 
-    return render_template('salesman_stock.html', data=data, msg=str(state))
+    else:
+        return redirect(url_for('login'))
 
 
 @app.route("/search", methods=['POST'])
 def search():
+
     search_text = request.args['search_text']  # get the text to search for
     # create an array with the elements of BRAZIL_STATES that contains the string
     # the case is ignored
@@ -783,47 +878,18 @@ def search():
 
 @app.route('/Sales/Invoice')
 def sales_invoice():
-    db = DatabaseByPyMySQL()
-    RecentOrders, notEmpty = db.getRangeOrdersDetails(page=0, range=50)
 
-    data = {
-        'RecentOrders': RecentOrders
-    }
-
-    return render_template('salesman_invoice.html', data=data)
-
-
-@app.route('/Manager/Add/Employee')
-def manager_add_emp():
-    return render_template('manager_add_emp.html')
-
-
-@app.route('/Manager/Add/EmployeeAdd', methods=['POST'])
-def manager_add_emp_form():
-    if request.method == 'POST':
-        EmployeeName = request.form['EmployeeName']
-        EmployeePhoneNumber = request.form['EmployeePhoneNumber']
-        EmployeeAddress = request.form['EmployeeAddress']
-        EmployeeEmail = request.form['EmployeeEmail']
-        EmployeePass = request.form['EmployeePass01']
-
-        log = EmployeeName + " " + EmployeePhoneNumber + " " + EmployeeAddress + " " + EmployeeEmail + " " + EmployeePass
-        print(log, flush=True)
-
+    if session.get('id') is not None and session.get('type') == 'EMP':
         db = DatabaseByPyMySQL()
+        RecentOrders, notEmpty = db.getRangeOrdersDetails(page=0, range=50)
 
-        if db.isEmailExist(EmployeeEmail):
-            print(" USER EXIST ", flush=True)
-            return render_template('manager_add_emp.html', msg='user_exist')
-        else:
-            print(" USER IS NEW ", flush=True)
-            feedback = db.addNewUser(name=EmployeeName, email=EmployeeEmail, address=EmployeeAddress,
-                                     phone=EmployeePhoneNumber, passwd=EmployeePass, userType='EMP')
+        data = {
+            'RecentOrders': RecentOrders
+        }
 
-            if feedback:
-                return render_template('manager_add_emp.html', msg='success')
-            else:
-                return render_template('manager_add_emp.html', msg='failed')
+        return render_template('salesman_invoice.html', data=data)
+    else:
+        return redirect(url_for('login'))
 
 
 @app.route('/Kitchen', methods=['GET'])
@@ -843,7 +909,24 @@ def kitchen():
 
 @app.route('/Login')
 def login():
-    return render_template('login.html')
+
+    if session.get('id') is not None:
+        if session['type'] == 'EMP':
+            print('EMP FOUND !!', flush=True)
+            return redirect(url_for('sales_dashboard'))
+
+        elif session['type'] == 'MNG':
+            print('MNG FOUND !!', flush=True)
+            return redirect(url_for('manager_dashboard'))
+
+        elif session['type'] == 'CUS':
+            print('CUS FOUND !!', flush=True)
+            return redirect(url_for('customer_dashboard'))
+
+        else:
+            abort(401)
+    else:
+        return render_template('login.html')
 
 @app.route('/Login', methods=['POST'])
 def login_request():
@@ -873,19 +956,31 @@ def login_request():
 
             elif session['type'] == 'MNG':
                 print('MNG FOUND !!', flush=True)
-                return url_for('manager_dashboard')
+                return redirect(url_for('manager_dashboard'))
 
             elif session['type'] == 'CUS':
                 print('CUS FOUND !!', flush=True)
-                return url_for('customer_dashboard')
+                return redirect(url_for('customer_dashboard'))
 
             else:
                 abort(401)
+
         else:
             print(status, flush=True)
 
 
     return render_template('login.html')
+
+@app.route('/Logout')
+def logout():
+    session.pop('id', None)
+    session.pop('phone', None)
+    session.pop('mail', None)
+    session.pop('type', None)
+    session.pop('address', None)
+    session.pop('name', None)
+
+    return redirect(url_for('login'))
 
 
 @app.route('/Customer')
