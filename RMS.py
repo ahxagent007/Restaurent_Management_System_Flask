@@ -3,8 +3,7 @@ import os
 import sys
 
 import app as app
-from django.shortcuts import redirect
-from flask import Flask, render_template, request, flash, url_for, send_from_directory, jsonify
+from flask import Flask, render_template, request, flash, url_for, send_from_directory, jsonify, session, abort, redirect
 import pymysql
 import hashlib
 import time
@@ -18,6 +17,7 @@ ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'}  # {'txt', 'pdf
 
 app = Flask(__name__, template_folder='templates', static_folder='static')
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+app.secret_key = 'SECRETKEYXIAN'
 
 # Lambda Function
 current_milli_time = lambda: int(round(time.time() * 1000))
@@ -48,8 +48,8 @@ class DatabaseByPyMySQL:
       data = self.cursor.fetchall()
       print(data)'''
 
-    def isEmailExist(self, email):
-        self.cursor.execute("SELECT * FROM login WHERE email = \"" + email + "\";")
+    def isEmailExist(self, email = "xxx", phone = "xxx"):
+        self.cursor.execute('SELECT * FROM login WHERE email = "{0}" or phone_no = "{1}";'.format(email, phone))
         data = self.cursor.fetchall()
         if (len(data) > 0):
             return True
@@ -76,9 +76,9 @@ class DatabaseByPyMySQL:
 
             print(sql1, flush=True)
 
-            passwd = hashlib.md5(passwd.encode())
+            passwd = hashlib.md5(passwd.encode("utf").hexdigest().hexdigest())
             # adding Login details
-            sql2 = 'INSERT INTO login(user_id,  email, password) VALUES({0},"{1}", "{2}");'.format(id, email, passwd)
+            sql2 = 'INSERT INTO login(user_id,  email, password, phone_no) VALUES({0},"{1}", "{2}","{3}");'.format(id, email, passwd, phone)
             self.cursor.execute(sql2)
             self.conection.commit()
 
@@ -206,7 +206,7 @@ class DatabaseByPyMySQL:
             emailed = data[0]['email']
             passed = data[0]['password']
 
-            if email == emailed and passed == hashlib.md5(passs.encode()):
+            if email == emailed and passed == hashlib.md5(passs.encode("utf").hexdigest()):
                 return id, True
             else:
                 return id, False
@@ -224,6 +224,18 @@ class DatabaseByPyMySQL:
 
         else:
             return data, False
+
+
+    def getUserByID(self,ID):
+        sql = 'SELECT * from users WHERE user_id = "{}";'.format(ID)
+        self.cursor.execute(sql)
+        data = self.cursor.fetchall()
+
+        if len(data) > 0:
+            return data[0], True
+
+        else:
+            return data[0], False
 
     def getAllStock(self):
         sql = 'SELECT * from product;'
@@ -439,6 +451,33 @@ class DatabaseByPyMySQL:
             return allData, True
         else:
             return allData, False
+
+    ########## NEW CODES
+
+    def Login(self, email, phone, password):
+        if(self.isEmailExist(email=email, phone=phone)):
+
+            self.cursor.execute('SELECT * FROM login WHERE email = "{0}" OR phone_no = "{1}";'.format(email,phone))
+            print('Login SQL : '+'SELECT * FROM login WHERE email = "{0}" OR phone_no = "{1}";'.format(email,phone),flush=True)
+            data = self.cursor.fetchall()
+
+            if (len(data) > 0):
+                serverPass = data[0]['password'];
+                md5PassConverted = str(hashlib.md5(password.encode("utf")).hexdigest())
+                print(data, flush=True)
+                print(serverPass+' SERVER PASS', flush=True)
+                print(md5PassConverted+' MD5 PASS', flush=True)
+
+                if md5PassConverted == serverPass :
+
+                    return True, data[0]['user_id']
+                else:
+                    return False, -1
+            else:
+                return False, -1
+        else:
+            return False, -1
+
 
 @app.route('/')
 def index():
@@ -812,14 +851,46 @@ def login_request():
         EmailOrPhone = request.form['emailOrPhone']
         Password = request.form['pass']
 
-
         print(EmailOrPhone+' '+Password, flush=True)
-
 
         db = DatabaseByPyMySQL()
 
+        status, user_id = db.Login(email=EmailOrPhone, phone=EmailOrPhone, password=Password)
+
+        if(status):
+            user = db.getUserByID(user_id)
+
+            session['id'] = user[0]['user_id']
+            session['phone'] = user[0]['phone_no']
+            session['mail'] = user[0]['email']
+            session['type'] = user[0]['type']
+            session['address'] = user[0]['address']
+            session['name'] = user[0]['name']
+
+            if session['type'] == 'EMP':
+                print('EMP FOUND !!', flush=True)
+                return redirect(url_for('sales_dashboard'))
+
+            elif session['type'] == 'MNG':
+                print('MNG FOUND !!', flush=True)
+                return url_for('manager_dashboard')
+
+            elif session['type'] == 'CUS':
+                print('CUS FOUND !!', flush=True)
+                return url_for('customer_dashboard')
+
+            else:
+                abort(401)
+        else:
+            print(status, flush=True)
 
 
+    return render_template('login.html')
+
+
+@app.route('/Customer')
+def customer_dashboard():
+    return 'PAGE NOT FOUND'
 
 
 app.debug = True
