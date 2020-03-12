@@ -76,7 +76,7 @@ class DatabaseByPyMySQL:
 
             print(sql1, flush=True)
 
-            passwd = hashlib.md5(passwd.encode("utf").hexdigest().hexdigest())
+            passwd = hashlib.md5(passwd.encode("utf").hexdigest())
             # adding Login details
             sql2 = 'INSERT INTO login(user_id,  email, password, phone_no) VALUES({0},"{1}", "{2}","{3}");'.format(id, email, passwd, phone)
             self.cursor.execute(sql2)
